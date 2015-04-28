@@ -1,0 +1,202 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"></head><body>
+  <h1 title="Created by RSGmaker :p" align="center">ComicLayouter HTML5 edition</h1>
+  <center>
+  <div id="status">Borders:Size <input id="Bsz" min="0" max="9999" onchange="DrawComic()" title="how large in pixels the border around the frames are.0 for none" type="number">Color <input value="#000000" id="Bcol" onchange="DrawComic()" title="color of frame bordering" type="color"> </div>
+  </center>
+  <div id="drop" style="border:1px solid blue;min-height:150px;background-color:#b0c4de;" title="you can drag your images from a window/folder into here.">
+  <div id="drp" style="float:left; min-height:150px;width:250px;margin:10px;padding:10px">Drop images here.</div>
+  <input id="upload" onchange="UPL()" accept="image/*" multiple="true" title="click here to add frames the old fashioned way :)" type="file">
+  <div id="preview" style="float:right;height:150px;"><img id="previmage" style="height:150px;" alt="a mini preview" title="comic thumbnail"> </div>
+
+  </div>
+  <div id="list" style="clear:both;"></div>
+  <center>
+  right-click the image select "Save image as..." to get your finished comic<br>
+  <img style="" id="the image" alt="your comic will appear here" title="this is your comic, you can save this image and use it however you want!">
+  </center>
+
+<script>
+var cv = document.createElement("canvas");
+var fimg   = document.getElementById('the image');
+var pimg   = document.getElementById('previmage');
+var BS = document.getElementById("Bsz");
+var BC = document.getElementById("Bcol");
+var UP = document.getElementById("upload");
+var ctx = cv.getContext("2d");
+var count=0;
+var toload = 0;
+var imgs = new Array();
+function zoom(){
+	fimg.style="";
+}
+function UPL(e){
+	e = e || window.event; // get window.event if e argument missing (in IE)   
+  if (e.preventDefault) { e.preventDefault(); } // stops the browser from redirecting off to the image.
+
+  var dt    = e.dataTransfer;
+  var files = UP.files;
+  toload = toload + files.length;
+  for (var i=0; i<files.length; i++) {
+    var file = files[i];
+    var reader = new FileReader();
+      
+    //attach event handlers here...
+   
+    reader.readAsDataURL(file);
+addEventHandler(reader, 'loadend', function(e, file) {
+    var bin           = this.result; 
+    var newFile       = document.createElement('div');
+    list.appendChild(newFile);  
+    var fileNumber = list.getElementsByTagName('div').length;
+
+    var img = document.createElement("img"); 
+    img.file = file;   
+    img.src = bin;
+    
+    imgs[count]=new Image;
+	imgs[count].src = bin;
+	
+	if (count==0){
+	  cv.width = imgs[count].width;
+	  cv.height = imgs[count].height;
+	}
+    count = count+1;
+	
+    //list.appendChild(img);
+	toload = toload - 1;
+	DrawComic();
+}.bindToEventHandler(file));
+}
+}
+function DrawComic(){
+if (toload == 0){
+	var Bz = Number(Bsz.value);
+	var y = Bz;
+  var j = 0;
+  var W = Bz;
+  var H = Bz;
+  var Bz2 = Bz+Bz;
+  
+	while (j<count){
+		var img = imgs[j];
+		if (img.width+Bz2>W){
+			W=img.width+Bz2;
+		}
+		H = H+img.height+Bz;
+		j = j+1;
+	}
+	j=0;
+	cv.width = W;
+	cv.height = H;
+	ctx.fillStyle=Bcol.value;
+	ctx.fillRect(0, 0, cv.width, cv.height);
+	y=Bz;
+	
+  while (j<count){
+    ctx.drawImage(imgs[j],Bz,y);
+	y = y+imgs[j].height+Bz;
+    j = j+1;
+  }
+  var dataURL = cv.toDataURL( "image/png" );
+var data = atob( dataURL.substring( "data:image/png;base64,".length ) ),
+    asArray = new Uint8Array(data.length);
+
+for( var i = 0, len = data.length; i < len; ++i ) {
+    asArray[i] = data.charCodeAt(i);    
+}
+
+var blob = new Blob( [ asArray.buffer ], {type: "image/png"} );
+
+fimg.src = (window.webkitURL || window.URL).createObjectURL( blob );
+pimg.src = fimg.src;
+}
+}
+if(window.FileReader) { 
+ var drop;
+ addEventHandler(fimg, 'onclick',zoom()); 
+ addEventHandler(window, 'load', function() {
+    var status = document.getElementById('status');
+    drop   = document.getElementById('drop');
+	var prv   = document.getElementById('preview');
+    var list   = document.getElementById('list');
+  	
+    function cancel(e) {
+      if (e.preventDefault) { e.preventDefault(); }
+      return false;
+    }
+  
+    // Tells the browser that we *can* drop on this target
+    addEventHandler(drop, 'dragover', cancel);
+    addEventHandler(drop, 'dragenter', cancel);
+
+addEventHandler(drop, 'drop', function (e) {
+  e = e || window.event; // get window.event if e argument missing (in IE)   
+  if (e.preventDefault) { e.preventDefault(); } // stops the browser from redirecting off to the image.
+
+  var dt    = e.dataTransfer;
+  var files = dt.files;
+  toload = toload + files.length;
+  for (var i=0; i<files.length; i++) {
+    var file = files[i];
+    var reader = new FileReader();
+      
+    //attach event handlers here...
+   
+    reader.readAsDataURL(file);
+addEventHandler(reader, 'loadend', function(e, file) {
+    var bin           = this.result; 
+    var newFile       = document.createElement('div');
+    list.appendChild(newFile);  
+    var fileNumber = list.getElementsByTagName('div').length;
+
+    var img = document.createElement("img"); 
+    img.file = file;   
+    img.src = bin;
+    
+    imgs[count]=new Image;
+	imgs[count].src = bin;
+	
+	if (count==0){
+	  cv.width = imgs[count].width;
+	  cv.height = imgs[count].height;
+	}
+    count = count+1;
+	
+    //list.appendChild(img);
+	toload = toload - 1;
+	DrawComic();
+}.bindToEventHandler(file));
+
+  }
+  
+  return false;
+});
+Function.prototype.bindToEventHandler = function bindToEventHandler() {
+  var handler = this;
+  var boundParameters = Array.prototype.slice.call(arguments);
+  //create closure
+  return function(e) {
+      e = e || window.event; // get window.event if e argument missing (in IE)   
+      boundParameters.unshift(e);
+      handler.apply(this, boundParameters);
+  }
+};
+  });
+} else { 
+  document.getElementById('status').innerHTML = 'Your browser does not support the HTML5 FileReader.';
+}
+function addEventHandler(obj, evt, handler) {
+    if(obj.addEventListener) {
+        // W3C method
+        obj.addEventListener(evt, handler, false);
+    } else if(obj.attachEvent) {
+        // IE method.
+        obj.attachEvent('on'+evt, handler);
+    } else {
+        // Old school method.
+        obj['on'+evt] = handler;
+    }
+}
+</script>
+</body></html>
