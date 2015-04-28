@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0A499039-ED5F-4D60-A7B7-05CB95532CEF}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ComicLayouter</RootNamespace>
+    <AssemblyName>ComicLayouter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>rsgcomiclayouter.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>CLicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AskInterval.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AskInterval.Designer.cs">
+      <DependentUpon>AskInterval.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComicPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ComicPanel.Designer.cs">
+      <DependentUpon>ComicPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BorderControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BorderControl.Designer.cs">
+      <DependentUpon>BorderControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cap2.cs" />
+    <Compile Include="CropControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CropControl.Designer.cs">
+      <DependentUpon>CropControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomResolution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomResolution.Designer.cs">
+      <DependentUpon>CustomResolution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FlashPlayer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FlashPlayer.Designer.cs">
+      <DependentUpon>FlashPlayer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GifPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GifPreview.Designer.cs">
+      <DependentUpon>GifPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gif\AnimatedGifEncoder.cs" />
+    <Compile Include="Gif\GifDecoder.cs" />
+    <Compile Include="Gif\GifEncoder.cs" />
+    <Compile Include="Gif\LZWEncoder.cs" />
+    <Compile Include="Gif\NeuQuant.cs" />
+    <Compile Include="HelpWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HelpWindow.Designer.cs">
+      <DependentUpon>HelpWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Overlay.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Save Gif.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Save Gif.Designer.cs">
+      <DependentUpon>Save Gif.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Stretcher.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stretcher.Designer.cs">
+      <DependentUpon>Stretcher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Suggestions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Suggestions.Designer.cs">
+      <DependentUpon>Suggestions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SpellCheckForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpellCheckForm.Designer.cs">
+      <DependentUpon>SpellCheckForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Walfas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Walfas.Designer.cs">
+      <DependentUpon>Walfas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WalfasWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WalfasWindow.Designer.cs">
+      <DependentUpon>WalfasWindow.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AskInterval.resx">
+      <DependentUpon>AskInterval.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ComicPanel.resx">
+      <DependentUpon>ComicPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BorderControl.resx">
+      <DependentUpon>BorderControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CropControl.resx">
+      <DependentUpon>CropControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomResolution.resx">
+      <DependentUpon>CustomResolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FlashPlayer.resx">
+      <DependentUpon>FlashPlayer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HelpWindow.resx">
+      <DependentUpon>HelpWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Save Gif.resx">
+      <DependentUpon>Save Gif.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stretcher.resx">
+      <DependentUpon>Stretcher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Suggestions.resx">
+      <DependentUpon>Suggestions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpellCheckForm.resx">
+      <DependentUpon>SpellCheckForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Walfas.resx">
+      <DependentUpon>Walfas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WalfasWindow.resx">
+      <DependentUpon>WalfasWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="rsgcomiclayouter.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CLicon.ico" />
+    <Content Include="Dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxShockwaveFlashObjects">
+      <Guid>{D27CDB6B-AE6D-11CF-96B8-444553540000}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="FlashAccessibility">
+      <Guid>{57A0E746-3863-4D20-A811-950C84F1DB9B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="ShockwaveFlashObjects">
+      <Guid>{D27CDB6B-AE6D-11CF-96B8-444553540000}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
