@@ -59,6 +59,7 @@
             this.setDelayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pasteImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extrasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.widthMismatchStretchingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.captureModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,7 +72,6 @@
             this.customPanelLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -344,6 +344,14 @@
             this.pasteImageToolStripMenuItem.ToolTipText = "Imports copied image from the clipboard";
             this.pasteImageToolStripMenuItem.Click += new System.EventHandler(this.pasteImageToolStripMenuItem_Click);
             // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.duplicateToolStripMenuItem.Text = "D&uplicate";
+            this.duplicateToolStripMenuItem.ToolTipText = "Makes a copy of the selected frame";
+            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
+            // 
             // extrasToolStripMenuItem
             // 
             this.extrasToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -399,9 +407,9 @@
             // 
             this.previewGifToolStripMenuItem.Name = "previewGifToolStripMenuItem";
             this.previewGifToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.previewGifToolStripMenuItem.Text = "&Preview Gif";
-            this.previewGifToolStripMenuItem.ToolTipText = "Opens a window that lets you see how the frames look like as an animated gif and " +
-    "lets you edit timing";
+            this.previewGifToolStripMenuItem.Text = "&Preview Animation";
+            this.previewGifToolStripMenuItem.ToolTipText = "Opens a window that lets you see how the frames look like as an animated gif/png " +
+    "and lets you edit timing";
             this.previewGifToolStripMenuItem.Click += new System.EventHandler(this.previewGifToolStripMenuItem_Click);
             // 
             // stretchingToolStripMenuItem
@@ -447,13 +455,6 @@
             // 
             this.folderBrowserDialog1.Description = "Select the root animation folder";
             this.folderBrowserDialog1.ShowNewFolderButton = false;
-            // 
-            // duplicateToolStripMenuItem
-            // 
-            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
-            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.duplicateToolStripMenuItem.Text = "D&uplicate";
-            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
             // Form1
             // 

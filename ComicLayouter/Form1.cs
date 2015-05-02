@@ -571,7 +571,7 @@ namespace ComicLayouter
                                 System.IO.File.Delete(saveFileDialog1.FileName);
                             }
                             System.IO.File.Copy("output.png", saveFileDialog1.FileName);
-                            MessageBox.Show("Animated png was saved successfully.");
+                            //MessageBox.Show("Animated png was saved successfully.");
                         }
                         else
                         {
