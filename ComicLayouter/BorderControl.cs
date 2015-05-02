@@ -17,11 +17,15 @@ namespace ComicLayouter
             SeperatorColor = Color.White;
             Border = new Size(0, 0);
             Seperator = 0;
+            Outline = 0;
+            OutlineColor = Color.Black;
         }
         public Color BorderColor;
         public Color SeperatorColor;
         public Size Border;
         public int Seperator;
+        public int Outline;
+        public Color OutlineColor;
 
 
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
@@ -106,6 +110,34 @@ namespace ComicLayouter
             {
                 SeperatorColor = colorDialog1.Color;
                 panel2.BackColor = SeperatorColor;
+            }
+        }
+
+
+        private void panel3_DoubleClick(object sender, EventArgs e)
+        {
+            panel3.BackColor = OutlineColor;
+            colorDialog1.Color = OutlineColor;
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                OutlineColor = colorDialog1.Color;
+                panel3.BackColor = OutlineColor;
+            }
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            int T;
+            if (int.TryParse(textBox4.Text, out T))
+            {
+                if (T >= 0)
+                {
+                    Outline = T;
+                }
+            }
+            else
+            {
+                textBox3.Text = "" + Seperator;
             }
         }
     }

@@ -49,9 +49,18 @@ namespace ComicLayouter
         }
         public void SetImage(Image i)
         {
-            Bitmap B = form1.Borderify(form1.Crop((Bitmap)i));
+            //tst is a test to see if pre
+            /*Bitmap tst = (Bitmap)i;
+            if (tst.Width > Width)
+            {
+                double D;
+                D = i.Height / ((double)i.Width);
+                tst = new Bitmap(tst,new Size(Width, (int)(Width * D)));
+            }*/
+            //Bitmap B = form1.Borderify(form1.Crop((Bitmap)i));
+            //Bitmap B = form1.Borderify(form1.Crop(tst));
+            Bitmap B = form1.GetThumbnail((Bitmap)i);
             Bitmap P;
-            
             Size S = B.Size;
             if (Width < S.Width)
             {
@@ -63,9 +72,17 @@ namespace ComicLayouter
             S.Width = (int)(S.Width / ratio);
             if (_ind > 0 || ratio != 1)
             {
+                bool isthumbnail = true;
+                int BH = form1.Borders.Border.Height;
+                if (isthumbnail)
+                {
+                    BH = BH >> 1;
+                }
+
+                //get rid of top of border if theres a panel of top that already has a border covering below.
                 P = new Bitmap((int)(S.Width), S.Height);
                 Graphics G = Graphics.FromImage(P);
-                G.DrawImage(B, new Rectangle(Point.Empty, new Size((int)(P.Width * ratio),P.Height)), new Rectangle(new Point(0, form1.Borders.Border.Height), new Size(B.Width, B.Height - form1.Borders.Border.Height)), GraphicsUnit.Pixel);
+                G.DrawImage(B, new Rectangle(Point.Empty, new Size((int)(P.Width * ratio), P.Height)), new Rectangle(new Point(0, BH), new Size(B.Width, B.Height - BH)), GraphicsUnit.Pixel);
                 G.Dispose();
             }
             else

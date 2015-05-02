@@ -111,11 +111,29 @@
     <Compile Include="CropControl.Designer.cs">
       <DependentUpon>CropControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomLayout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomLayout.Designer.cs">
+      <DependentUpon>CustomLayout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomPanel.Designer.cs">
+      <DependentUpon>CustomPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomResolution.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="CustomResolution.Designer.cs">
       <DependentUpon>CustomResolution.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomRow.Designer.cs">
+      <DependentUpon>CustomRow.cs</DependentUpon>
     </Compile>
     <Compile Include="FlashPlayer.cs">
       <SubType>UserControl</SubType>
@@ -199,14 +217,26 @@
     <EmbeddedResource Include="CropControl.resx">
       <DependentUpon>CropControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomLayout.resx">
+      <DependentUpon>CustomLayout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomPanel.resx">
+      <DependentUpon>CustomPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomResolution.resx">
       <DependentUpon>CustomResolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomRow.resx">
+      <DependentUpon>CustomRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FlashPlayer.resx">
       <DependentUpon>FlashPlayer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GifPreview.resx">
+      <DependentUpon>GifPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HelpWindow.resx">
       <DependentUpon>HelpWindow.cs</DependentUpon>

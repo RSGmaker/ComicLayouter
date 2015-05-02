@@ -153,7 +153,15 @@ namespace ComicLayouter
             {
                 ComicPanel B = (ComicPanel)F.panel1.Controls[F.SelectedPanel.ind + 1];
                 F.SelectedPanel.Unselect();
-                F.panel1.VerticalScroll.Value += B.Height;
+                try
+                {
+                    F.panel1.VerticalScroll.Value += B.Height;
+                }
+                catch
+                {
+                    F.panel1.VerticalScroll.Value = F.panel1.VerticalScroll.Minimum;
+                }
+                //F.panel1.VerticalScroll.Value += B.Height;
                 B.Select();
             }
             else
@@ -186,7 +194,14 @@ namespace ComicLayouter
             {
                 ComicPanel B = (ComicPanel)F.panel1.Controls[F.SelectedPanel.ind - 1];
                 F.SelectedPanel.Unselect();
-                F.panel1.VerticalScroll.Value -= B.Height;
+                try
+                {
+                    F.panel1.VerticalScroll.Value -= B.Height;
+                }
+                catch
+                {
+                    F.panel1.VerticalScroll.Value = F.panel1.VerticalScroll.Maximum;
+                }
                 B.Select();
             }
             else
@@ -195,7 +210,13 @@ namespace ComicLayouter
                 {
                     ComicPanel B = (ComicPanel)F.panel1.Controls[F.panel1.Controls.Count - 1];
                     F.SelectedPanel.Unselect();
-                    F.panel1.VerticalScroll.Value = F.panel1.VerticalScroll.Maximum;
+                    try
+                    {
+                        F.panel1.VerticalScroll.Value = F.panel1.VerticalScroll.Maximum;
+                    }
+                    catch
+                    {
+                    }
                     B.Select();
                 }
                 else

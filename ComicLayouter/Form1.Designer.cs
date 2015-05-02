@@ -68,8 +68,10 @@
             this.stretchingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openCreateswfToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createAnimatedComicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.customPanelLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,7 +83,7 @@
             // saveFileDialog1
             // 
             this.saveFileDialog1.DefaultExt = "png";
-            this.saveFileDialog1.Filter = "all supported files|*.png;*.gif|comic png|*.png|animated gif|*.gif";
+            this.saveFileDialog1.Filter = "comic png|*.png";
             // 
             // button1
             // 
@@ -91,7 +93,7 @@
             this.button1.Size = new System.Drawing.Size(41, 23);
             this.button1.TabIndex = 1;
             this.button1.Text = "Save";
-            this.toolTip1.SetToolTip(this.button1, "Save the completed comic\r\nor as an animated gif");
+            this.toolTip1.SetToolTip(this.button1, "Save the completed comic.");
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -188,8 +190,8 @@
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(41, 23);
             this.button8.TabIndex = 10;
-            this.button8.Text = "Gif";
-            this.toolTip1.SetToolTip(this.button8, "Preview & adjust Gif timing");
+            this.button8.Text = "Anim";
+            this.toolTip1.SetToolTip(this.button8, "Preview & adjust animation timing");
             this.button8.UseVisualStyleBackColor = false;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
@@ -242,7 +244,7 @@
             // loadImagesToolStripMenuItem
             // 
             this.loadImagesToolStripMenuItem.Name = "loadImagesToolStripMenuItem";
-            this.loadImagesToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.loadImagesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.loadImagesToolStripMenuItem.Text = "&Load Images";
             this.loadImagesToolStripMenuItem.ToolTipText = "Load images,(you can also drag files straight into this program)";
             this.loadImagesToolStripMenuItem.Click += new System.EventHandler(this.loadImagesToolStripMenuItem_Click);
@@ -250,7 +252,7 @@
             // clearImagesToolStripMenuItem
             // 
             this.clearImagesToolStripMenuItem.Name = "clearImagesToolStripMenuItem";
-            this.clearImagesToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.clearImagesToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.clearImagesToolStripMenuItem.Text = "&Clear Images";
             this.clearImagesToolStripMenuItem.ToolTipText = "Remove ALL images";
             this.clearImagesToolStripMenuItem.Click += new System.EventHandler(this.clearImagesToolStripMenuItem_Click);
@@ -258,7 +260,7 @@
             // saveComicToolStripMenuItem
             // 
             this.saveComicToolStripMenuItem.Name = "saveComicToolStripMenuItem";
-            this.saveComicToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.saveComicToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.saveComicToolStripMenuItem.Text = "Save &Comic";
             this.saveComicToolStripMenuItem.ToolTipText = "Save the completed comic";
             this.saveComicToolStripMenuItem.Click += new System.EventHandler(this.saveComicToolStripMenuItem_Click);
@@ -266,15 +268,15 @@
             // saveAsGIFToolStripMenuItem
             // 
             this.saveAsGIFToolStripMenuItem.Name = "saveAsGIFToolStripMenuItem";
-            this.saveAsGIFToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
-            this.saveAsGIFToolStripMenuItem.Text = "Save as &GIF ";
+            this.saveAsGIFToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveAsGIFToolStripMenuItem.Text = "Save as &Animation";
             this.saveAsGIFToolStripMenuItem.ToolTipText = "Save the images as an animated gif";
             this.saveAsGIFToolStripMenuItem.Click += new System.EventHandler(this.saveAsGIFToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.ToolTipText = "Close the program";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -287,7 +289,8 @@
             this.deleteDeleteToolStripMenuItem,
             this.setDelayToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.pasteImageToolStripMenuItem});
+            this.pasteImageToolStripMenuItem,
+            this.duplicateToolStripMenuItem});
             this.frameToolStripMenuItem.Name = "frameToolStripMenuItem";
             this.frameToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.frameToolStripMenuItem.Text = "&Frame";
@@ -352,6 +355,7 @@
             this.stretchingToolStripMenuItem,
             this.openCreateswfToolStripMenuItem,
             this.createAnimatedComicToolStripMenuItem,
+            this.customPanelLayoutToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.extrasToolStripMenuItem.Name = "extrasToolStripMenuItem";
             this.extrasToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
@@ -424,6 +428,14 @@
             this.createAnimatedComicToolStripMenuItem.ToolTipText = "Create a series of comics to put into an animated gif";
             this.createAnimatedComicToolStripMenuItem.Click += new System.EventHandler(this.createAnimatedComicToolStripMenuItem_Click);
             // 
+            // customPanelLayoutToolStripMenuItem
+            // 
+            this.customPanelLayoutToolStripMenuItem.Name = "customPanelLayoutToolStripMenuItem";
+            this.customPanelLayoutToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.customPanelLayoutToolStripMenuItem.Text = "C&ustom panel layout";
+            this.customPanelLayoutToolStripMenuItem.ToolTipText = "Compose a comic with any number of columns";
+            this.customPanelLayoutToolStripMenuItem.Click += new System.EventHandler(this.customPanelLayoutToolStripMenuItem_Click);
+            // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
@@ -434,6 +446,14 @@
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.Description = "Select the root animation folder";
+            this.folderBrowserDialog1.ShowNewFolderButton = false;
+            // 
+            // duplicateToolStripMenuItem
+            // 
+            this.duplicateToolStripMenuItem.Name = "duplicateToolStripMenuItem";
+            this.duplicateToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.duplicateToolStripMenuItem.Text = "D&uplicate";
+            this.duplicateToolStripMenuItem.Click += new System.EventHandler(this.duplicateToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -453,6 +473,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximumSize = new System.Drawing.Size(8000, 4000);
@@ -513,6 +534,8 @@
         private System.Windows.Forms.ToolStripMenuItem pasteImageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createAnimatedComicToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.ToolStripMenuItem customPanelLayoutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
     }
 }
 
