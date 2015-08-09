@@ -798,7 +798,7 @@ namespace ComicLayouter
             {
                 if (System.IO.File.Exists(SS[i]))
                 {
-
+                    var ok = true;
                     if (SS[i].EndsWith(".gif"))
                     {
                         if (MessageBox.Show("you have chosen to load in a gif file\nanimated gifs are not fast too load(if its not animated then it wont matter)", "load gif?", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
@@ -813,14 +813,18 @@ namespace ComicLayouter
                             Gr.Read(SS[i]);
                             for (int c = 0; c < Gr.GetFrameCount(); c++)
                             {
-                                Text = "grabbing frame " + (c+1) + "/" + Gr.GetFrameCount();
+                                Text = "grabbing frame " + (c + 1) + "/" + Gr.GetFrameCount();
                                 Image I = Gr.GetFrame(c);
                                 string temp = "temp/" + System.IO.Path.GetFileName(SS[i]) + "." + c + ".png";
-                                LoadImages(temp,new Bitmap(I));
+                                LoadImages(temp, new Bitmap(I));
                                 System.Threading.Thread thread = new System.Threading.Thread(Lthread);
-                                thread.Start(new object[]{I,temp});
-                                
+                                thread.Start(new object[] { I, temp });
+
                             }
+                        }
+                        else
+                        {
+                            ok = false;
                         }
                     }
                     else
@@ -830,8 +834,11 @@ namespace ComicLayouter
                         F.Close();
                         img.Add(B);
                     }
-                    panel1.Controls.Add(new ComicPanel(this,System.IO.Path.GetFileName(SS[i]), img[img.Count - 1], img.Count - 1));
-                    addpanel();
+                    if (ok)
+                    {
+                        panel1.Controls.Add(new ComicPanel(this, System.IO.Path.GetFileName(SS[i]), img[img.Count - 1], img.Count - 1));
+                        addpanel();
+                    }
                 }
                 
             }
