@@ -179,6 +179,7 @@ namespace ComicLayouter
             if (arg != null && arg.Length>0)
             {
                 LoadImages(combine(arg));
+                redopanel();
             }
             Text = Text.Replace("ComicLayouter", "ComicLayouter" + version);
             TITLE = Text;
@@ -361,6 +362,7 @@ namespace ComicLayouter
             if (openFileDialog1.ShowDialog() != System.Windows.Forms.DialogResult.Cancel)
             {
                 LoadImages(openFileDialog1.FileNames);
+                redopanel();
             }
         }
         /// <summary>
@@ -1120,6 +1122,7 @@ namespace ComicLayouter
                     
                 }
                 LoadImages(SS);
+                redopanel();
 
             }
             catch
