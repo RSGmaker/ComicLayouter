@@ -380,35 +380,49 @@ namespace ComicLayouter
                 string root = folderBrowserDialog1.SelectedPath;
                 if (System.IO.Directory.Exists(root))
                 {
-                    string[] dirs = System.IO.Directory.GetDirectories(root);
+                    List<String> dirs = new List<string>();
+                    dirs.AddRange(System.IO.Directory.GetDirectories(root));
+                    dirs.AddRange(System.IO.Directory.GetFiles(root, "panel*.png"));
                     var i = 0;
                     var maxcount = 0;
                     List<List<Bitmap>> panels = new List<List<Bitmap>>();
                     Text = "Searching panel frames";
-                    while (i < dirs.Length)
+                    while (i < dirs.Count)
                     {
                         if (System.IO.Path.GetFileName(dirs[i]).ToLower().StartsWith("panel"))
                         {
                             List<Bitmap> panel = new List<Bitmap>();
                             var c = 0;
-                            var T = new List<string>(System.IO.Directory.GetFiles(dirs[i], "*.png"));
-                            T.Sort(filesort);
-                            string[] images = T.ToArray();
-                            while (c < images.Length)
+                            List<string> T = null;
+                            if (System.IO.Directory.Exists(dirs[i]))
                             {
-                                System.IO.FileStream F = new System.IO.FileStream(images[c], System.IO.FileMode.Open);
-                                Bitmap B = (Bitmap)Bitmap.FromStream(F);
-                                F.Close();
-                                panel.Add(B);
-                                c++;
+                                T = new List<string>(System.IO.Directory.GetFiles(dirs[i], "*.png"));
+                                T.Sort(filesort);
                             }
-
-                            if (panel.Count > 0)
+                            else if (System.IO.File.Exists(dirs[i]))
                             {
-                                panels.Add(panel);
-                                if (panel.Count > maxcount)
+                                T = new List<string>();
+                                T.Add(dirs[i]);
+                            }
+                            if (T != null)
+                            {
+                                string[] images = T.ToArray();
+                                while (c < images.Length)
                                 {
-                                    maxcount = panel.Count;
+                                    System.IO.FileStream F = new System.IO.FileStream(images[c], System.IO.FileMode.Open);
+                                    Bitmap B = (Bitmap)Bitmap.FromStream(F);
+                                    F.Close();
+                                    panel.Add(B);
+                                    c++;
+                                }
+
+                                if (panel.Count > 0)
+                                {
+                                    panels.Add(panel);
+                                    if (panel.Count > maxcount)
+                                    {
+                                        maxcount = panel.Count;
+                                    }
                                 }
                             }
                         }
