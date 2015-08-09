@@ -46,11 +46,12 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(620, 410);
             this.panel1.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.panel1, "This is the preview area");
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseMove);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 2);
+            this.button1.Location = new System.Drawing.Point(2, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -67,7 +68,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(152, 2);
+            this.button2.Location = new System.Drawing.Point(83, 2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(52, 23);
             this.button2.TabIndex = 2;
@@ -78,11 +79,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(272, 2);
+            this.button3.Location = new System.Drawing.Point(235, 2);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(131, 23);
+            this.button3.Size = new System.Drawing.Size(91, 23);
             this.button3.TabIndex = 3;
-            this.button3.Text = "Create animated comic";
+            this.button3.Text = "Animated Comic";
             this.toolTip1.SetToolTip(this.button3, "create an animated comic using the custom layout");
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
@@ -95,11 +96,13 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(478, 6);
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(141, 6);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(134, 17);
+            this.checkBox1.Size = new System.Drawing.Size(88, 17);
             this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "Vertical based ordering";
+            this.checkBox1.Text = "Vertical order";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -115,7 +118,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.Name = "CustomLayout";
-            this.Text = "Custom Layouter";
+            this.Text = "Custom Layouter(Click X to return to standard mode)";
             this.Load += new System.EventHandler(this.CustomLayout_Load);
             this.ResizeEnd += new System.EventHandler(this.CustomLayout_ResizeEnd);
             this.VisibleChanged += new System.EventHandler(this.CustomLayout_VisibleChanged);
