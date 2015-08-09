@@ -166,9 +166,11 @@ namespace ComicLayouter
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == (int)WM_NCHITTEST)
-                //m.Result = (IntPtr)HTTRANSPARENT;
+            {
+                m.Result = (IntPtr)HTTRANSPARENT;
                 //m.Result = m.Result;
                 base.WndProc(ref m);
+            }
             else
                 base.WndProc(ref m);
         }
@@ -480,6 +482,13 @@ namespace ComicLayouter
             }
             if (keyData == Keys.F9)
             {
+                var X = Cursor.Position.X;
+                var Y = Cursor.Position.Y;
+                if (!fullscreen)
+                {
+                    X -= (Left + chrome);
+                    Y -= (Top + TC);
+                }
                 if (TransparencyKey != Color.Empty)
                 {
                     TransparencyKey = Color.Empty;
@@ -492,13 +501,13 @@ namespace ComicLayouter
                         Text = "Cropping mode! left click to set top-left, right for bottom-right!";
                     }
                 }
-                else if (Cursor.Position.X>=0 && Cursor.Position.Y >= 0 && Cursor.Position.X < Width && Cursor.Position.Y < Height)
+                else if (X>=0 && Y >= 0 && X < ClientSize.Width && Y < ClientSize.Height)
                 {
                     
                     Bitmap B = Capture();
-                    Color TC = B.GetPixel(Cursor.Position.X, Cursor.Position.Y);
-                    TC = Color.FromArgb(255, TC);
-                    TransparencyKey = TC;
+                    Color NC = B.GetPixel(X, Y);
+                    NC = Color.FromArgb(255, NC);
+                    TransparencyKey = NC;
                     B.Dispose();
                     //win32 versions
                     if (false)
@@ -506,7 +515,7 @@ namespace ComicLayouter
                         //Opacity
                         SetLayeredWindowAttributes(Handle, 0, (byte)(OPC * 100), LWA_ALPHA);
                         //Transparencykey(it seems that it uses ABGR however)
-                        SetLayeredWindowAttributes(Handle, (uint)(TC.ToArgb()), 0, LWA_COLORKEY);
+                        SetLayeredWindowAttributes(Handle, (uint)(NC.ToArgb()), 0, LWA_COLORKEY);
                     }
                     Text = "WD:Color Sync Mode!"+TransparencyKey.ToString() + TITLE;
                 }
@@ -644,6 +653,10 @@ namespace ComicLayouter
                     //MessageBox.Show("crash:" + ee.Message);
                 }
             }
+            else
+            {
+                customrightclick = false;
+            }
             if (webBrowser1.Visible)
             {
                 Waffle = webBrowser1;
@@ -692,6 +705,7 @@ namespace ComicLayouter
                 {
                     //open create.swf in ActiveX flash player.
                     ((FlashPlayer)Waffle).Movie = "file://" + System.Environment.CurrentDirectory + @"/create.swf";
+                    FlashPlayer FP = ((FlashPlayer)Waffle);
                 }
             }
             else
@@ -827,16 +841,22 @@ namespace ComicLayouter
 
                     
                 }
-
-                R[8] = new Rectangle(new Point((MPos.X - 16) + panel1.HorizontalScroll.Value, (MPos.Y - 16) + panel1.VerticalScroll.Value), new Size(32, 32));
+                if (fullscreen)
+                {
+                    R[8] = new Rectangle(new Point((MPos.X - 16) + panel1.HorizontalScroll.Value, (MPos.Y - 16) + panel1.VerticalScroll.Value), new Size(32, 32));
+                }
+                e.Graphics.FillRectangles(B, R);
                 Pen P = Pens.Blue;
                 e.Graphics.DrawLine(P, new Point(Crop.X - 32, Crop.Y), new Point(Crop.X + 32, Crop.Y));
                 e.Graphics.DrawLine(P, new Point(Crop.X, Crop.Y - 32), new Point(Crop.X, Crop.Y + 32));
-                P = Pens.Red;
-                e.Graphics.DrawLine(P, new Point(Crop.Right - 32, Crop.Bottom), new Point(Crop.Right + 32, Crop.Bottom));
-                e.Graphics.DrawLine(P, new Point(Crop.Right, Crop.Bottom - 32), new Point(Crop.Right, Crop.Bottom + 32));
+                if (Crop.Width > 0 && Crop.Height > 0)
+                {
+                    P = Pens.Red;
+                    e.Graphics.DrawLine(P, new Point(Crop.Right - 32, Crop.Bottom), new Point(Crop.Right + 32, Crop.Bottom));
+                    e.Graphics.DrawLine(P, new Point(Crop.Right, Crop.Bottom - 32), new Point(Crop.Right, Crop.Bottom + 32));
+                }
                 //Cursor.Position.X
-                e.Graphics.FillRectangles(B, R);
+                
             }
         }
 
@@ -889,11 +909,12 @@ namespace ComicLayouter
                     Focus();
                     SetWindowLong(Handle, GWL_EXSTYLE, normalstyle);
                 }
-                else if (!ghostmode && Cursor.Position.X >= Screen.PrimaryScreen.Bounds.Width-1 && Cursor.Position.Y >= Screen.PrimaryScreen.Bounds.Height - 1)
+                else if (!ghostmode && Cursor.Position.X >= Screen.PrimaryScreen.Bounds.Width - 1 && Cursor.Position.Y >= Screen.PrimaryScreen.Bounds.Height - 1)
                 {
                     Opacity = OPC * 0.2;
                     ghostmode = true;
                     int extendedStyle = GetWindowLong(Handle, GWL_EXSTYLE);
+                    normalstyle = GetWindowLong(Handle, GWL_EXSTYLE);
                     SetWindowLong(Handle, GWL_EXSTYLE, extendedStyle | WS_EX_TRANSPARENT);
                 }
             }
@@ -915,7 +936,12 @@ namespace ComicLayouter
                     Crop.Size = new Size(e.X - Crop.Location.X, e.Y - Crop.Location.Y);
                 }
             }
-            Text = "X:" + Crop.X + " Y:" + Crop.Y + " Width:" + Crop.Width + " Height:" + Crop.Height;
+            string coords = "X:" + Crop.X + " Y:" + Crop.Y + " Width:" + Crop.Width + " Height:" + Crop.Height;
+            if (Crop.Width < 1 || Crop.Height < 1)
+            {
+                coords = "No crop set";
+            }
+            Text = "(F12) " + coords + " use left & right mouse buttons to set crop";
             toolTip1.ToolTipTitle = Text;
             if (toolTip1.Active)
             {
@@ -1060,6 +1086,71 @@ namespace ComicLayouter
         private void changeWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             showresolutionmenu();
+        }
+
+        private void lowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mediumToolStripMenuItem.Checked = false;
+            highToolStripMenuItem.Checked = false;
+            lowToolStripMenuItem.Checked = true;
+            if (!IE)
+            {
+                FlashPlayer FP = (FlashPlayer)Waffle;
+                FP.Quality = "Low";
+            }
+        }
+
+        private void mediumToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mediumToolStripMenuItem.Checked = true;
+            highToolStripMenuItem.Checked = false;
+            lowToolStripMenuItem.Checked = false;
+            if (!IE)
+            {
+                FlashPlayer FP = (FlashPlayer)Waffle;
+                FP.Quality = "Medium";
+            }
+        }
+
+        private void highToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mediumToolStripMenuItem.Checked = false;
+            highToolStripMenuItem.Checked = true;
+            lowToolStripMenuItem.Checked = false;
+            if (!IE)
+            {
+                FlashPlayer FP = (FlashPlayer)Waffle;
+                FP.Quality = "High";
+            }
+        }
+        public void rightclick()
+        {
+            lastposition = Cursor.Position;
+            contextMenuStrip1.Show(this, new System.Drawing.Point(Cursor.Position.X - (Left + chrome), Cursor.Position.Y - (Top + TC)));
+        }
+
+        private void changeBackgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                if (!IE)
+                {
+                    FlashPlayer FP = (FlashPlayer)Waffle;
+                    FP.BackgroundColor = colorDialog1.Color;
+                }
+            }
+        }
+
+        private void getImageURLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                var T = openFileDialog1.FileName;
+                Clipboard.SetText(T);
+                T = "Copied URL to clipboard:" + T;
+                /*toolTip1.SetToolTip(Waffle, T);
+                toolTip1.Show(T ,Waffle,2000);*/
+            }
         }
 
     }

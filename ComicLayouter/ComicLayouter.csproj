@@ -311,6 +311,7 @@
     <Content Include="Dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="flash.ico" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="AxShockwaveFlashObjects">
