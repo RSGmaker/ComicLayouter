@@ -154,6 +154,8 @@ F9 = toggle WalfasDesktop, effects the color your mouse is over
 F10 = Open walfas save data directory
 F11 = Set custom walfas window resolution
 F12 = Activates cropping tool, left click sets position, right click changes its size(use this with F5 and F6)
+
+Right click = opens a custom menu
 </value>
   </data>
 </root>

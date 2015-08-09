@@ -132,13 +132,14 @@
             this.changeBackgroundColorToolStripMenuItem,
             this.getImageURLToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 236);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 258);
             // 
             // fullScreenModeToolStripMenuItem
             // 
             this.fullScreenModeToolStripMenuItem.Name = "fullScreenModeToolStripMenuItem";
             this.fullScreenModeToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.fullScreenModeToolStripMenuItem.Text = "Full Screen Mode!(F4)";
+            this.fullScreenModeToolStripMenuItem.ToolTipText = "Toggle Full screen mode";
             this.fullScreenModeToolStripMenuItem.Click += new System.EventHandler(this.fullScreenModeToolStripMenuItem_Click);
             // 
             // httpwalfasorgToolStripMenuItem
@@ -206,6 +207,7 @@
             this.walfasAndComicLayouterControlsToolStripMenuItem.Name = "walfasAndComicLayouterControlsToolStripMenuItem";
             this.walfasAndComicLayouterControlsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.walfasAndComicLayouterControlsToolStripMenuItem.Text = "Controls(F1)";
+            this.walfasAndComicLayouterControlsToolStripMenuItem.ToolTipText = "Displays a list of hotkeys usable by create.swf and comiclayouter";
             this.walfasAndComicLayouterControlsToolStripMenuItem.Click += new System.EventHandler(this.walfasAndComicLayouterControlsToolStripMenuItem_Click);
             // 
             // openCreateswfSaveFolderToolStripMenuItem
@@ -213,6 +215,7 @@
             this.openCreateswfSaveFolderToolStripMenuItem.Name = "openCreateswfSaveFolderToolStripMenuItem";
             this.openCreateswfSaveFolderToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.openCreateswfSaveFolderToolStripMenuItem.Text = "Open Create.swf save folder(F10)";
+            this.openCreateswfSaveFolderToolStripMenuItem.ToolTipText = "Locates your create.swf\'s offline savedata";
             this.openCreateswfSaveFolderToolStripMenuItem.Click += new System.EventHandler(this.openCreateswfSaveFolderToolStripMenuItem_Click);
             // 
             // changeWindowSizeToolStripMenuItem
@@ -220,6 +223,7 @@
             this.changeWindowSizeToolStripMenuItem.Name = "changeWindowSizeToolStripMenuItem";
             this.changeWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.changeWindowSizeToolStripMenuItem.Text = "Change Window Size(F11)";
+            this.changeWindowSizeToolStripMenuItem.ToolTipText = "Change the size of the window, or sets a custom resolution";
             this.changeWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.changeWindowSizeToolStripMenuItem_Click);
             // 
             // spellCheckToolStripMenuItem
@@ -227,6 +231,7 @@
             this.spellCheckToolStripMenuItem.Name = "spellCheckToolStripMenuItem";
             this.spellCheckToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.spellCheckToolStripMenuItem.Text = "SpellCheck(F3)";
+            this.spellCheckToolStripMenuItem.ToolTipText = "Opens a spellcheck window";
             this.spellCheckToolStripMenuItem.Click += new System.EventHandler(this.spellCheckToolStripMenuItem_Click);
             // 
             // changeBackgroundColorToolStripMenuItem
@@ -234,6 +239,7 @@
             this.changeBackgroundColorToolStripMenuItem.Name = "changeBackgroundColorToolStripMenuItem";
             this.changeBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.changeBackgroundColorToolStripMenuItem.Text = "Change Background Color";
+            this.changeBackgroundColorToolStripMenuItem.ToolTipText = "Change the flash player\'s background color";
             this.changeBackgroundColorToolStripMenuItem.Click += new System.EventHandler(this.changeBackgroundColorToolStripMenuItem_Click);
             // 
             // getImageURLToolStripMenuItem
@@ -241,7 +247,7 @@
             this.getImageURLToolStripMenuItem.Name = "getImageURLToolStripMenuItem";
             this.getImageURLToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
             this.getImageURLToolStripMenuItem.Text = "Copy URL of file";
-            this.getImageURLToolStripMenuItem.ToolTipText = "Copies a url from a selected file, that you can paste into \"import image\"";
+            this.getImageURLToolStripMenuItem.ToolTipText = "Copies a url from a selected file, that you can paste into \"insert->image\"";
             this.getImageURLToolStripMenuItem.Click += new System.EventHandler(this.getImageURLToolStripMenuItem_Click);
             // 
             // openFileDialog1
