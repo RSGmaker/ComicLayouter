@@ -36,9 +36,19 @@
             this.timer3 = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.fullScreenModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.httpwalfasorgToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCreateswfSaveFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.takeSnapshotF6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.walfasAndComicLayouterControlsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.spellCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.overlay1 = new ComicLayouter.Overlay();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.overlay1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -96,6 +106,76 @@
             this.panel1.Click += new System.EventHandler(this.panel1_Click);
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fullScreenModeToolStripMenuItem,
+            this.httpwalfasorgToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.takeSnapshotF6ToolStripMenuItem,
+            this.walfasAndComicLayouterControlsToolStripMenuItem,
+            this.openCreateswfSaveFolderToolStripMenuItem,
+            this.changeWindowSizeToolStripMenuItem,
+            this.spellCheckToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 180);
+            // 
+            // fullScreenModeToolStripMenuItem
+            // 
+            this.fullScreenModeToolStripMenuItem.Name = "fullScreenModeToolStripMenuItem";
+            this.fullScreenModeToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.fullScreenModeToolStripMenuItem.Text = "Full Screen Mode!(F4)";
+            this.fullScreenModeToolStripMenuItem.Click += new System.EventHandler(this.fullScreenModeToolStripMenuItem_Click);
+            // 
+            // httpwalfasorgToolStripMenuItem
+            // 
+            this.httpwalfasorgToolStripMenuItem.Name = "httpwalfasorgToolStripMenuItem";
+            this.httpwalfasorgToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.httpwalfasorgToolStripMenuItem.Text = "http://www.walfas.org";
+            this.httpwalfasorgToolStripMenuItem.Click += new System.EventHandler(this.httpwalfasorgToolStripMenuItem_Click);
+            // 
+            // openCreateswfSaveFolderToolStripMenuItem
+            // 
+            this.openCreateswfSaveFolderToolStripMenuItem.Name = "openCreateswfSaveFolderToolStripMenuItem";
+            this.openCreateswfSaveFolderToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.openCreateswfSaveFolderToolStripMenuItem.Text = "Open Create.swf save folder(F10)";
+            this.openCreateswfSaveFolderToolStripMenuItem.Click += new System.EventHandler(this.openCreateswfSaveFolderToolStripMenuItem_Click);
+            // 
+            // takeSnapshotF6ToolStripMenuItem
+            // 
+            this.takeSnapshotF6ToolStripMenuItem.Name = "takeSnapshotF6ToolStripMenuItem";
+            this.takeSnapshotF6ToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.takeSnapshotF6ToolStripMenuItem.Text = "Take Snapshot(F6)";
+            this.takeSnapshotF6ToolStripMenuItem.Click += new System.EventHandler(this.takeSnapshotF6ToolStripMenuItem_Click);
+            // 
+            // walfasAndComicLayouterControlsToolStripMenuItem
+            // 
+            this.walfasAndComicLayouterControlsToolStripMenuItem.Name = "walfasAndComicLayouterControlsToolStripMenuItem";
+            this.walfasAndComicLayouterControlsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.walfasAndComicLayouterControlsToolStripMenuItem.Text = "Controls(F1)";
+            this.walfasAndComicLayouterControlsToolStripMenuItem.Click += new System.EventHandler(this.walfasAndComicLayouterControlsToolStripMenuItem_Click);
+            // 
+            // spellCheckToolStripMenuItem
+            // 
+            this.spellCheckToolStripMenuItem.Name = "spellCheckToolStripMenuItem";
+            this.spellCheckToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.spellCheckToolStripMenuItem.Text = "SpellCheck(F3)";
+            this.spellCheckToolStripMenuItem.Click += new System.EventHandler(this.spellCheckToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Enabled = false;
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(247, 22);
+            this.toolStripMenuItem2.Text = "-------------------------";
+            // 
+            // changeWindowSizeToolStripMenuItem
+            // 
+            this.changeWindowSizeToolStripMenuItem.Name = "changeWindowSizeToolStripMenuItem";
+            this.changeWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+            this.changeWindowSizeToolStripMenuItem.Text = "Change Window Size(F11)";
+            this.changeWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.changeWindowSizeToolStripMenuItem_Click);
+            // 
             // overlay1
             // 
             this.overlay1.Location = new System.Drawing.Point(434, 302);
@@ -110,15 +190,17 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(644, 442);
             this.Controls.Add(this.panel1);
-            this.DoubleBuffered = true;
             this.Name = "WalfasWindow";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Create.swf F1:Help";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WalfasWindow_FormClosed);
             this.Load += new System.EventHandler(this.WalfasWindow_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.WalfasWindow_Scroll);
             this.Click += new System.EventHandler(this.WalfasWindow_Click);
             this.Resize += new System.EventHandler(this.WalfasWindow_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.overlay1)).EndInit();
             this.ResumeLayout(false);
 
@@ -134,5 +216,14 @@
         private System.Windows.Forms.Timer timer3;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolStripMenuItem httpwalfasorgToolStripMenuItem;
+        public System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fullScreenModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCreateswfSaveFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem takeSnapshotF6ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem walfasAndComicLayouterControlsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem spellCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeWindowSizeToolStripMenuItem;
     }
 }

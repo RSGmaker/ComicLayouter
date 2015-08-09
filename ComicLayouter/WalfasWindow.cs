@@ -33,6 +33,7 @@ namespace ComicLayouter
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg,
             IntPtr wParam, IntPtr lParam);
+        public static WalfasWindow _this=null;
         public Form1 form1;
         public bool cropmode;
         public string TITLE;
@@ -48,6 +49,7 @@ namespace ComicLayouter
         public int TC = 0;
         public double OPC;
         public System.Threading.Thread thread;
+        public bool customrightclick = true;
         public List<Bitmap> BL = new List<Bitmap>();
         public List<string> BS = new List<string>();
         bool IE;
@@ -87,7 +89,7 @@ namespace ComicLayouter
                 F.Focus();
                 F.BringToFront();
             }
-            TransparencyKey = Color.Empty;
+            ////TransparencyKey = Color.Empty;
             //SC = new TextBox();
             SC.SpellCheck.IsEnabled = true;
             SC.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"));
@@ -164,7 +166,9 @@ namespace ComicLayouter
         protected override void WndProc(ref Message m)
         {
             if (m.Msg == (int)WM_NCHITTEST)
-                m.Result = (IntPtr)HTTRANSPARENT;
+                //m.Result = (IntPtr)HTTRANSPARENT;
+                //m.Result = m.Result;
+                base.WndProc(ref m);
             else
                 base.WndProc(ref m);
         }
@@ -384,26 +388,7 @@ namespace ComicLayouter
             }
             if (keyData == Keys.F4 || (keyData == (Keys.Alt | Keys.Enter)))
             {
-                if (!fullscreen)
-                {
-                    if (WindowState == FormWindowState.Maximized)
-                    {
-                        WindowState = FormWindowState.Normal;
-                    }
-                    FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-                    last = new Rectangle(Location, Size);
-                    Location = new Point(0, 0);
-                    Size = Screen.PrimaryScreen.Bounds.Size;
-                    fullscreen = true;
-                }
-                else
-                {
-                    FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
-                    Location = last.Location;
-                    Size = last.Size;
-                    fullscreen = false;
-                }
-                TopMost = fullscreen;
+                togglefullscreen();
             }
             if (keyData == Keys.F2)
             {
@@ -528,44 +513,11 @@ namespace ComicLayouter
             }
             if (keyData == Keys.F10)
             {
-                string S = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                
-                S = S + @"\Macromedia\Flash Player\#SharedObjects\";
-                if (System.IO.Directory.Exists(S))
-                {
-                    string[] D = System.IO.Directory.GetDirectories(S);
-                    if (D.Length == 1)
-                    {
-                        S = D[0] + @"\localhost\walfas_create_savedata.sol";
-                        if (System.IO.File.Exists(S))
-                        {
-                            System.Diagnostics.Process P = new System.Diagnostics.Process();
-                            P.StartInfo = new System.Diagnostics.ProcessStartInfo("explorer", "/select," + S);
-                            P.Start();
-                        }
-                        else
-                        {
-                            MessageBox.Show("could not find offline savedata.");
-                        }
-                    }
-                }
+                opensavedata();
             }
             if (keyData == Keys.F11)
             {
-                //Waffle.Size
-                CustomResolution CR = new CustomResolution(Waffle.Width, Waffle.Height, Waffle.Dock != DockStyle.Fill);
-                
-                CR.ShowDialog();
-                if (CR.CRenabled)
-                {
-                    Waffle.Dock = DockStyle.None;
-                    Waffle.Size = new Size(CR.width, CR.height);
-                    this.AutoScroll = true;
-                }
-                else
-                {
-                    Waffle.Dock = DockStyle.Fill;
-                }
+                showresolutionmenu();
             }
             if (keyData == Keys.F12)
             {
@@ -577,7 +529,7 @@ namespace ComicLayouter
                 {
                     pictureBox1.BringToFront();
                     cropmode = true;
-                    Text = "Cropping mode! left click to set top-left, right for bottom-right!";
+                    Text = "(F12)Cropping mode! left click to set top-left, right for bottom-right!";
                 }
                 else
                 {
@@ -594,10 +546,75 @@ namespace ComicLayouter
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
+        private void showresolutionmenu()
+        {
+            //Waffle.Size
+            CustomResolution CR = new CustomResolution(Waffle.Width, Waffle.Height, Waffle.Dock != DockStyle.Fill);
+
+            CR.ShowDialog();
+            if (CR.CRenabled)
+            {
+                Waffle.Dock = DockStyle.None;
+                Waffle.Size = new Size(CR.width, CR.height);
+                this.AutoScroll = true;
+            }
+            else
+            {
+                Waffle.Dock = DockStyle.Fill;
+                Size = new Size(Size.Width + (CR.width - Waffle.Width), Size.Height + (CR.height - Waffle.Height));
+            }
+        }
+        private void opensavedata()
+        {
+            string S = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            S = S + @"\Macromedia\Flash Player\#SharedObjects\";
+            if (System.IO.Directory.Exists(S))
+            {
+                string[] D = System.IO.Directory.GetDirectories(S);
+                if (D.Length == 1)
+                {
+                    S = D[0] + @"\localhost\walfas_create_savedata.sol";
+                    if (System.IO.File.Exists(S))
+                    {
+                        System.Diagnostics.Process P = new System.Diagnostics.Process();
+                        P.StartInfo = new System.Diagnostics.ProcessStartInfo("explorer", "/select," + S);
+                        P.Start();
+                    }
+                    else
+                    {
+                        MessageBox.Show("could not find offline savedata.");
+                    }
+                }
+            }
+        }
+        private void togglefullscreen()
+        {
+            if (!fullscreen)
+            {
+                if (WindowState == FormWindowState.Maximized)
+                {
+                    WindowState = FormWindowState.Normal;
+                }
+                FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                last = new Rectangle(Location, Size);
+                Location = new Point(0, 0);
+                Size = Screen.PrimaryScreen.Bounds.Size;
+                fullscreen = true;
+            }
+            else
+            {
+                FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+                Location = last.Location;
+                Size = last.Size;
+                fullscreen = false;
+            }
+            TopMost = fullscreen;
+        }
         /// <summary>
         /// generic walfas container the reason its generic is to prevent run time errors when the ActiveX dll info is looked up/called.
         /// </summary>
-        Control Waffle;
+        public Control Waffle;
         object WI;
         private void WFL()
         {
@@ -613,6 +630,7 @@ namespace ComicLayouter
         }
         private void WalfasWindow_Load(object sender, EventArgs e)
         {
+            _this = this;
             Waffle = webBrowser1;
             WI = webBrowser1.Document.DomDocument;
             if (!IE)
@@ -1001,6 +1019,47 @@ namespace ComicLayouter
         private void WalfasWindow_Click(object sender, EventArgs e)
         {
             SC.Text = "";
+        }
+
+        private void WalfasWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            _this = null;
+        }
+
+        private void fullScreenModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            togglefullscreen();
+        }
+
+        private void httpwalfasorgToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.walfas.org/");
+        }
+
+        private void openCreateswfSaveFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            opensavedata();
+        }
+
+        private void takeSnapshotF6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DoCapture();
+        }
+
+        private void walfasAndComicLayouterControlsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HelpWindow HW = new HelpWindow();
+            HW.ShowDialog();
+        }
+
+        private void spellCheckToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void changeWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            showresolutionmenu();
         }
 
     }

@@ -205,6 +205,7 @@
     <Compile Include="WalfasWindow.Designer.cs">
       <DependentUpon>WalfasWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="WalfasWindowClickFilter.cs" />
     <EmbeddedResource Include="AskInterval.resx">
       <DependentUpon>AskInterval.cs</DependentUpon>
     </EmbeddedResource>
