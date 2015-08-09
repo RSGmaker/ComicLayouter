@@ -26,6 +26,7 @@ namespace ComicLayouter
         private void CustomLayout_Load(object sender, EventArgs e)
         {
             LSize = Size;
+            panel1.Size = new System.Drawing.Size(ClientSize.Width - 2/*-18*/, panel1.Height/* ClientSize.Height - panel1.Location.Y*/);
         }
 
         private void panel1_MouseMove(object sender, MouseEventArgs e)
@@ -212,7 +213,7 @@ namespace ComicLayouter
         {
             if (Size != LSize)
             {
-                panel1.Size = new System.Drawing.Size(ClientSize.Width/*-18*/,panel1.Height/* ClientSize.Height - panel1.Location.Y*/);
+                panel1.Size = new System.Drawing.Size(ClientSize.Width-2/*-18*/,panel1.Height/* ClientSize.Height - panel1.Location.Y*/);
                 int r = 0;
                 while (r < rows.Count)
                 {
