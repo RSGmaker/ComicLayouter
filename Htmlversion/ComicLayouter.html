@@ -1,22 +1,29 @@
 <html><head>
-<meta http-equiv="content-type" content="text/html; charset=windows-1252"></head><body>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252"><title>ComicLayouter HTML5 edition</title></head><body>
   <h1 title="Created by RSGmaker :p" align="center">ComicLayouter HTML5 edition</h1>
-  <center>
-  <div id="status">Borders:Size <input id="Bsz" min="0" value="0" max="9999" onchange="DrawComic()" title="how large in pixels the border around the frames are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Bcol" onchange="DrawComic()" title="color of frame bordering" type="color"> 
-  &nbsp;&nbsp;&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;Separators:Size <input id="Ssz" min="0" value="0" max="9999" onchange="DrawComic()" title="how large in pixels the separators between frames are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Scol" onchange="DrawComic()" title="color of frame separator" type="color"> <br/><br/>
-  Columns number: <input id="columns" min="1" value="1" max="9999" onchange="DrawComic()" title="number of columns to split the frames into" type="number"><div id="Vsp" style="visibility:hidden">Separator <input id="Vsz" min="0" value="0" max="9999" onchange="DrawComic()" title="how large in pixels the separators between columns are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Vcol" onchange="DrawComic()" title="color of column separator" type="color"></div></div>
+  <center style="padding-bottom:6px;">
+  <div id="status">Borders:Size <input id="Bsz" min="0" value="0" max="9999" onchange="DrawComic()" title="How large in pixels the border around the frames are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Bcol" onchange="DrawComic()" title="Color of frame bordering" type="color"> 
+  &nbsp;&nbsp;&nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;&nbsp;&nbsp;Separators:Size <input id="Ssz" min="0" value="0" max="9999" onchange="DrawComic()" title="How large in pixels the separators between frames are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Scol" onchange="DrawComic()" title="Color of frame separator" type="color"> <br/><br/>
+  
+  
+  
+  Columns number: <input id="columns" min="1" value="1" max="9999" onchange="DrawComic()" title="Number of columns to split the frames into" type="number"><br/>
+  <div style="float:left"><button type="button" onclick="upload.click()" title="Click here to add frames the old fashioned way :)">Load images through file browser</button> <input id="upload" style="visibility:hidden" onchange="UPL()" accept="image/*" multiple="true" title="Click here to add frames the old fashioned way :)" type="file"/></div>
+  <div id="Vsp" style="float:right;position:relative;left:-45%;visibility:hidden">Separator <input id="Vsz" min="0" value="0" max="9999" onchange="DrawComic()" title="How large in pixels the separators between columns are.0 for none" type="number">&nbsp;Color <input value="#000000" id="Vcol" onchange="DrawComic()" title="Color of column separator" type="color"></div></div>
+  <br/>
   </center>
-  <div id="drop" style="border:1px solid blue;min-height:150px;background-color:#b0c4de;" title="you can drag your images from a window/folder into here.">
-  <div id="drp" style="float:left; min-height:150px;width:250px;margin:10px;padding:10px">Drop images here.</div>
-  <input id="upload" onchange="UPL()" accept="image/*" multiple="true" title="click here to add frames the old fashioned way :)" type="file">
-  <div id="preview" style="float:right;height:150px;"><img id="previmage" style="height:150px;" alt="a mini preview" title="comic thumbnail"> </div>
+  <div id="drop" style="border:1px solid blue;min-height:150px;background-color:#b0c4de;" title="You can drag images from another window into here.">
+  <div id="drp" style="float:left; min-height:150px;width:250px;margin:10px;">Or drag & drop your images here.</div>
+  
+  <div id="preview" style="float:right;height:150px;width:30%;"><img id="previmage" style="height:150px;" alt="A mini preview" title="Comic thumbnail"/> </div>
 
   </div>
   <div id="list" style="clear:both;"></div>
   <center>
-  right-click the image select "Save image as..." to get your finished comic<br>
-  <img style="" id="the image" alt="your comic will appear here" title="this is your comic, you can save this image and use it however you want!">
+  Right-click the image select "Save image as..." to get your finished comic<br>
+  <img style="" id="the image" alt="Your comic will appear here" title="This is your rendered comic!"/>
   </center>
+  ComicLayouter is made by <a onclick="if (count==0 || confirm('You have images loaded, are you sure you want to leave?')){window.location='http://rsgmaker.deviantart.com/';}else{return false;}" href="http://rsgmaker.deviantart.com/">RSGmaker</a>.
 
 <script>
 var cv = document.createElement("canvas");
