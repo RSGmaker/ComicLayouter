@@ -35,7 +35,10 @@ namespace ComicLayouter
             InitializeComponent();
             label1.Text = str;
             form1 = form;
-            SetImage(img);
+            Size S = form.BorderifySize(form.CropSize(img.Size));
+            Bitmap B = new Bitmap(S.Width, S.Height);
+            pictureBox1.Image = B;
+            //SetImage(img);
             ind = i;
             if (_ind > 0)
             {
@@ -80,16 +83,22 @@ namespace ComicLayouter
                 }
 
                 //get rid of top of border if theres a panel of top that already has a border covering below.
-                P = new Bitmap((int)(S.Width), S.Height);
+                P = new Bitmap((int)(S.Width), S.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
                 Graphics G = Graphics.FromImage(P);
                 G.DrawImage(B, new Rectangle(Point.Empty, new Size((int)(P.Width * ratio), P.Height)), new Rectangle(new Point(0, BH), new Size(B.Width, B.Height - BH)), GraphicsUnit.Pixel);
                 G.Dispose();
             }
             else
             {
-                P = new Bitmap(B, S);
+                //P = new Bitmap(B, S);
+                P = new Bitmap((int)(S.Width), S.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                Graphics G = Graphics.FromImage(P);
+                G.DrawImage(B, new Rectangle(0, 0, S.Width, S.Height));
+                //G.DrawImage(B, new Rectangle(Point.Empty, S), GraphicsUnit.Pixel);
+                G.Dispose();
             }
-            
+            pictureBox1.Width = P.Width;
+            pictureBox1.Height = P.Height;
             pictureBox1.Image = P;
             if (B != i)
             {

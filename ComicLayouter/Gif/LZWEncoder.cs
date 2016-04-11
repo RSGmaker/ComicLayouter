@@ -28,7 +28,7 @@ namespace Gif.Components
 
 		private static readonly int EOF = -1;
 
-		private int imgW, imgH;
+		private int imgW, imgH, imgT;
 		private byte[] pixAry;
 		private int initCodeSize;
 		private int remaining;
@@ -138,6 +138,7 @@ namespace Gif.Components
 		{
 			imgW = width;
 			imgH = height;
+            imgT = imgW * imgH;
 			pixAry = pixels;
 			initCodeSize = Math.Max(2, color_depth);
 		}
@@ -197,8 +198,9 @@ namespace Gif.Components
 			ent = NextPixel();
 
 			hshift = 0;
-			for (fcode = hsize; fcode < 65536; fcode *= 2)
-				++hshift;
+            //for (fcode = hsize; fcode < 65536; fcode *= 2)
+            for (fcode = hsize; fcode < 65536; fcode += fcode)
+                ++hshift;
 			hshift = 8 - hshift; // set hash code range bound
 
 			hsize_reg = hsize;
@@ -253,7 +255,7 @@ namespace Gif.Components
 		{
 			os.WriteByte( Convert.ToByte( initCodeSize) ); // write "initial code size" byte
 
-			remaining = imgW * imgH; // reset navigation variables
+			remaining = imgT; // reset navigation variables
 			curPixel = 0;
 
 			Compress(initCodeSize + 1, os); // compress and write the pixel data

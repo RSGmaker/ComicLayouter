@@ -50,8 +50,13 @@
             this.loadImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveComicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.frameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shiftUpPgUPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.shiftDownPgDOWNToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,6 +77,9 @@
             this.customPanelLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialog2 = new System.Windows.Forms.OpenFileDialog();
+            this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -235,8 +243,13 @@
             this.loadImagesToolStripMenuItem,
             this.clearImagesToolStripMenuItem,
             this.saveComicToolStripMenuItem,
+            this.importAnimationToolStripMenuItem,
             this.saveAsGIFToolStripMenuItem,
-            this.exitToolStripMenuItem});
+            this.exitToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.openProjectToolStripMenuItem,
+            this.saveProjectToolStripMenuItem,
+            this.importProjectToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
@@ -265,6 +278,17 @@
             this.saveComicToolStripMenuItem.ToolTipText = "Save the completed comic";
             this.saveComicToolStripMenuItem.Click += new System.EventHandler(this.saveComicToolStripMenuItem_Click);
             // 
+            // importAnimationToolStripMenuItem
+            // 
+            this.importAnimationToolStripMenuItem.Name = "importAnimationToolStripMenuItem";
+            this.importAnimationToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.importAnimationToolStripMenuItem.Text = "Import Animation";
+            this.importAnimationToolStripMenuItem.ToolTipText = "Disassembles frames from an animation using ffmpeg and imports the results.\r\n\r\nWa" +
+    "rning:disassembled videos may produce too many frames and ComicLayouter won\'t be" +
+    " able to load that many.";
+            this.importAnimationToolStripMenuItem.Visible = false;
+            this.importAnimationToolStripMenuItem.Click += new System.EventHandler(this.importAnimationToolStripMenuItem_Click);
+            // 
             // saveAsGIFToolStripMenuItem
             // 
             this.saveAsGIFToolStripMenuItem.Name = "saveAsGIFToolStripMenuItem";
@@ -280,6 +304,35 @@
             this.exitToolStripMenuItem.Text = "&Exit";
             this.exitToolStripMenuItem.ToolTipText = "Close the program";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(168, 6);
+            // 
+            // openProjectToolStripMenuItem
+            // 
+            this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
+            this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.openProjectToolStripMenuItem.Text = "Open Project";
+            this.openProjectToolStripMenuItem.ToolTipText = "Loads a session.";
+            this.openProjectToolStripMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
+            // 
+            // saveProjectToolStripMenuItem
+            // 
+            this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
+            this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.saveProjectToolStripMenuItem.Text = "Save Project";
+            this.saveProjectToolStripMenuItem.ToolTipText = "Save this session.";
+            this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
+            // 
+            // importProjectToolStripMenuItem
+            // 
+            this.importProjectToolStripMenuItem.Name = "importProjectToolStripMenuItem";
+            this.importProjectToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.importProjectToolStripMenuItem.Text = "Import Project";
+            this.importProjectToolStripMenuItem.ToolTipText = "Combines data from another session";
+            this.importProjectToolStripMenuItem.Click += new System.EventHandler(this.importProjectToolStripMenuItem_Click);
             // 
             // frameToolStripMenuItem
             // 
@@ -456,6 +509,20 @@
             this.folderBrowserDialog1.Description = "Select the root animation folder";
             this.folderBrowserDialog1.ShowNewFolderButton = false;
             // 
+            // saveFileDialog2
+            // 
+            this.saveFileDialog2.Filter = "Project xml|*.xml";
+            // 
+            // openFileDialog2
+            // 
+            this.openFileDialog2.FileName = "openFileDialog2";
+            this.openFileDialog2.Filter = "Project xml|*.xml";
+            // 
+            // openFileDialog3
+            // 
+            this.openFileDialog3.FileName = "openFileDialog3";
+            this.openFileDialog3.Filter = "All files|*.*";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -480,7 +547,7 @@
             this.MaximumSize = new System.Drawing.Size(8000, 4000);
             this.MinimumSize = new System.Drawing.Size(231, 435);
             this.Name = "Form1";
-            this.Text = "ComicLayouter by RSGmaker";
+            this.Text = "ComicLayouter Suite by RSGmaker";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResizeEnd += new System.EventHandler(this.Form1_ResizeEnd_1);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
@@ -537,6 +604,14 @@
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.ToolStripMenuItem customPanelLayoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem saveProjectToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private System.Windows.Forms.ToolStripMenuItem openProjectToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialog2;
+        private System.Windows.Forms.ToolStripMenuItem importProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem importAnimationToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openFileDialog3;
     }
 }
 

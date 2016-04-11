@@ -132,7 +132,7 @@
             this.changeBackgroundColorToolStripMenuItem,
             this.getImageURLToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 258);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 236);
             // 
             // fullScreenModeToolStripMenuItem
             // 

@@ -176,7 +176,7 @@ namespace Gif.Components
 				WritePixels(); // encode and write pixel data
 				firstFrame = false;
 			} 
-			catch 
+			catch(Exception e)
 			{
 				ok = false;
 			}
@@ -376,13 +376,23 @@ namespace Gif.Components
 			//int dmin = 256 * 256 * 256;
             int dmin = 16777216;
 			int len = colorTab.Length;
+
+            int ii = 0;
+            int count = 0;
 			for (int i = 0; i < len;) 
 			{
 				int dr = r - (colorTab[i++] & 0xff);
 				int dg = g - (colorTab[i++] & 0xff);
 				int db = b - (colorTab[i] & 0xff);
 				int d = dr * dr + dg * dg + db * db;
-				int index = i / 3;
+                //int index = i / 3;
+                int index = ii;
+                count++;
+                if (count > 2)
+                {
+                    count -= 3;
+                    ii++;
+                }
 				if (usedEntry[index] && (d < dmin)) 
 				{
 					dmin = d;
@@ -407,7 +417,7 @@ namespace Gif.Components
 			{
 				// create new image with right size/format
 				Image temp =
-					new Bitmap(width, height );
+					new Bitmap(width, height,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 				Graphics g = Graphics.FromImage( temp );
 				g.DrawImage(image, 0, 0);
 				image = temp;
@@ -436,21 +446,47 @@ namespace Gif.Components
             //pixels = grabbitmapBytes(new Bitmap(image));
             byte[] pt = grabbitmapBytes(new Bitmap(image));
             int i = 0;
-            pixels = new byte[pt.Length];
-            while (i + 3 < pt.Length)
+            //pixels = new byte[pt.Length];
+            pixels = new Byte[3 * image.Width * image.Height];
+            //while (i + 3 < pt.Length)
+            //while (i + 2 < pt.Length)
+            int pxl = 0;
+            int j = 0;
+            while (i + 3 < pixels.Length && j+3 < pt.Length)
             {
-                pixels[i] = pt[i + 2];
-                pixels[i+1] = pt[i + 1];
-                pixels[i+2] = pt[i];
+                pixels[i] = pt[j + 2];
+                pixels[i+1] = pt[j + 1];
+                pixels[i+2] = pt[j];
                 i += 3;
+                j += 3;
+                pxl++;
+                /*if (pxl>image.Width)
+                {
+                    pxl -= image.Width;
+                    j += 3;
+                }*/
             }
+            //System.Windows.Forms.MessageBox.Show("pxl:" + pixels.Length + " total:" + i + " expected:"+(3 * image.Width * image.Height));
+            //Console.WriteLine("pxl:" + pixels.Length + " total:" + i);
 			//		pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		}
 
         public static byte[] grabbitmapBytes(Bitmap image)
         {
             // Create a new bitmap.
-            Bitmap bmp = image.Clone(new Rectangle(Point.Empty, image.Size), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            Bitmap bmp = image;
+            if (image.PixelFormat != System.Drawing.Imaging.PixelFormat.Format24bppRgb)
+            {
+                //bmp = image.Clone(new Rectangle(Point.Empty, image.Size), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Size s = new Size(image.Width, image.Height);
+                Bitmap R = new Bitmap(s.Width, s.Height, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                Graphics G = Graphics.FromImage(R);
+                Point P = Point.Empty;
+                Size Sz = s;
+                G.DrawImage(bmp, new Rectangle(Point.Empty, R.Size), new Rectangle(P, Sz), GraphicsUnit.Pixel);
+                G.Dispose();
+                bmp = R;
+            }
 
             // Lock the bitmap's bits.  
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
@@ -478,7 +514,32 @@ namespace Gif.Components
 
             // Unlock the bits.
             bmp.UnlockBits(bmpData);
-            return rgbValues;
+
+            byte[] ret = new byte[(bmp.Width * bmp.Height)*3];
+            int i = 0;
+            int j = 0;
+            int w = 0;
+            int str = ((bmpData.Stride/3) - bmp.Width)*3;
+            while (i + 3 < ret.Length && j + 3 < rgbValues.Length)
+            {
+                ret[i] = rgbValues[j];
+                i++;
+                j++;
+                ret[i] = rgbValues[j];
+                i++;
+                j++;
+                ret[i] = rgbValues[j];
+                i++;
+                j++;
+                w++;
+                if (w >= bmp.Width)
+                {
+                    j += (str);
+                    w -= bmp.Width;
+                }
+            }
+            //return rgbValues;
+            return ret;
         }
 	
 		/**

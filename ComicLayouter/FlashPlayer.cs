@@ -56,6 +56,11 @@ namespace ComicLayouter
             return flash.GetOcx();
         }
 
+        public void Rewind()
+        {
+            flash.Rewind();
+        }
+
         private void FlashPlayer_Load(object sender, EventArgs e)
         {
             flash = new AxShockwaveFlashObjects.AxShockwaveFlash();

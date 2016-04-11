@@ -11,6 +11,8 @@ using System.Reflection;
 using System.Drawing.Imaging;
 using System.Management;
 using System.Linq;
+using System.Xml;
+using System.IO;
 
 namespace ComicLayouter
 {
@@ -41,6 +43,7 @@ namespace ComicLayouter
                 _SelectedPanel = value;
             }
         }
+        public string audiopath = "";
         /// <summary>
         /// whether autoclipboard is active or not
         /// </summary>
@@ -71,6 +74,8 @@ namespace ComicLayouter
         /// true if user clicked save as animation, this is used to determine if png is an apng.
         /// </summary>
         public bool saveanimation = false;
+
+        public CLSettings settings;
 
 
         public void SetVersion(FileVersionInfo s)
@@ -163,7 +168,7 @@ namespace ComicLayouter
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             SetVersion(fvi);
             InitializeComponent();
-            Text = Text.Replace("ComicLayouter", "ComicLayouter" + version);
+            Text = Text.Replace("ComicLayouter Suite", "ComicLayouter Suite" + version);
             TITLE = Text;
             Cropper = new CropControl(this);
             Borders = new BorderControl();
@@ -181,7 +186,7 @@ namespace ComicLayouter
                 LoadImages(combine(arg));
                 redopanel();
             }
-            Text = Text.Replace("ComicLayouter", "ComicLayouter" + version);
+            Text = Text.Replace("ComicLayouter Suite", "ComicLayouter Suite" + version);
             TITLE = Text;
             Cropper = new CropControl(this);
             Borders = new BorderControl();
@@ -285,6 +290,35 @@ namespace ComicLayouter
 
             }
         }
+        public Size GetStretchSize(Bitmap B)
+        {
+            return GetStretchSize(B.Size);
+        }
+        public Size GetStretchSize(Size size)
+        {
+            if (Stretch.IsEmpty || (Stretch.Height <= 0 && Stretch.Width <= 0))
+            {
+                return size;
+            }
+            else
+            {
+                if (Stretch.Width > 0 && Stretch.Height > 0)
+                {
+                    return Stretch;
+                }
+                if (Stretch.Width > 0 && Stretch.Height <= 0)
+                {
+                    float f = Stretch.Width / ((float)size.Width);
+                    return new Size(Stretch.Width, (int)(size.Height * f));
+                }
+                if (Stretch.Width <= 0 && Stretch.Height > 0)
+                {
+                    float f = Stretch.Height / ((float)size.Height);
+                    return new Size((int)(size.Width * f), Stretch.Height);
+                }
+                return Stretch;
+            }
+        }
         public Bitmap GetStretch(Bitmap B)
         {
             if (Stretch.IsEmpty || (Stretch.Height<=0 && Stretch.Width <= 0))
@@ -293,7 +327,7 @@ namespace ComicLayouter
             }
             else
             {
-                if (Stretch.Width > 0 && Stretch.Height > 0)
+                /*if (Stretch.Width > 0 && Stretch.Height > 0)
                 {
                     return new Bitmap(B, Stretch);
                 }
@@ -307,12 +341,54 @@ namespace ComicLayouter
                     float f = Stretch.Height / ((float)B.Height);
                     return new Bitmap(B, new Size((int)(B.Width * f),Stretch.Height));
                 }
-                return new Bitmap(B, Stretch);
+                return new Bitmap(B, Stretch);*/
+                Size S = GetStretchSize(B);
+                return new Bitmap(B, S);
             }
         }
         public Bitmap Borderify(Bitmap B)
         {
             return Borderify(B, Borders.Border,Borders.Outline);
+        }
+        public Size BorderifySize(Size bitmap)
+        {
+            return BorderifySize(bitmap, Borders.Border, Borders.Outline);
+        }
+        public Size BorderifySize(Size B, Size border, int Outline)
+        {
+            if (border.Width == 0 && border.Height == 0)
+            {
+                //return new Bitmap(B);
+                return GetStretchSize(B);
+            }
+            else
+            {
+                int BW = border.Width * 2;
+                int BH = border.Height * 2;
+                int OL = Outline * 2;
+
+                /*Bitmap ret = new Bitmap(B.Width + (BW) + (OL), B.Height + (BH) + (Outline * 2));
+                Graphics G = Graphics.FromImage(ret);
+                G.Clear(Borders.BorderColor);
+                G.FillRectangle(new SolidBrush(Borders.OutlineColor), new Rectangle(border.Width, border.Height, B.Width + (OL), B.Height + (OL)));
+                //G.DrawRectangle(new Pen(OutlineColor),new Rectangle(Border.Width,Border.Height,B.Width+1,B.Height+1));
+
+                G.DrawImage(B, new Rectangle(new Point(border.Width + Outline, border.Height + Outline), B.Size), new Rectangle(Point.Empty, B.Size), GraphicsUnit.Pixel);
+                G.Dispose();*/
+                Size ret = new Size(B.Width + (BW) + (OL), B.Height + (BH) + (Outline * 2));
+                //return new Bitmap(ret);
+                return GetStretchSize(ret);
+                /*Bitmap ret = new Bitmap(B.Width + (BW) + (OL), B.Height + (BH) + (OL));
+                Graphics G = Graphics.FromImage(ret);
+                G.Clear(Borders.BorderColor);
+                G.FillRectangle(new SolidBrush(Borders.OutlineColor), new Rectangle(border.Width, border.Height, B.Width + (OL), B.Height + (OL)));
+                //G.DrawRectangle(new Pen(Borders.OutlineColor),new Rectangle(Borders.Border.Width,Borders.Border.Height,B.Width+1,B.Height+1));
+
+                G.DrawImage(B, new Rectangle(new Point(border.Width+Borders.Outline, border.Height+Outline), B.Size), new Rectangle(Point.Empty, B.Size), GraphicsUnit.Pixel);
+                G.Dispose();
+                //return new Bitmap(ret);
+                return GetStretch(ret);*/
+            }
         }
         public Bitmap Borderify(Bitmap B,Size border,int Outline)
         {
@@ -404,22 +480,33 @@ namespace ComicLayouter
             int BH = Borders.Border.Height;
             int BW2 = Borders.Border.Width * 2;
             int BH2 = Borders.Border.Height * 2;
-            Bitmap[] LB = new Bitmap[IMG.Count];
+            //Bitmap[] LB = new Bitmap[IMG.Count];
+            Size[] LS = new Size[IMG.Count];
             for (int i = 0; i < IMG.Count; i++)
             {
                 Bitmap B = IMG[i];
+                Size S = B.Size;
                 if (Cropper.IWidth != 100 || Cropper.IHeight != 100)
                 {
-                    B = Crop(B);
+                    S = CropSize(S);
                 }
-                LB[i] = Borderify(B);
-                Size S = LB[i].Size;
+                S = BorderifySize(S);
+                LS[i] = S;
+                /*LB[i] = Borderify(B);
+                if (B != IMG[i])
+                {
+                    B.Dispose();
+                    GC.Collect();
+                }
+                Size S = LB[i].Size;*/
+                
                 X = Math.Max(X, S.Width);
 
             }
             for (int i = 0; i < IMG.Count; i++)
             {
-                Size S = LB[i].Size;
+                //Size S = LB[i].Size;
+                Size S = LS[i];
                 if (scalemismatch)
                 {
                     double D = (((double)X) / S.Width);
@@ -428,7 +515,8 @@ namespace ComicLayouter
                 Y += S.Height;
                 if (Borders.Seperator <= 0)
                 {
-                    Y -= BH2;
+                    //Y -= BH2;
+                    Y -= Borders.Border.Height;
                 }
                 if (i < IMG.Count - 1)
                 {
@@ -436,6 +524,7 @@ namespace ComicLayouter
                 }
 
             }
+            Y += Borders.Border.Height;
 
             Bitmap ret = new Bitmap(X, Y);
             Graphics G = Graphics.FromImage(ret);
@@ -443,7 +532,19 @@ namespace ComicLayouter
             Y = 0;
             for (int i = 0; i < IMG.Count; i++)
             {
-                Bitmap B = LB[i];
+                Bitmap bmp = IMG[i];
+                if (Cropper.IWidth != 100 || Cropper.IHeight != 100)
+                {
+                    bmp = Crop(bmp);
+                }
+                Bitmap temp = bmp;
+                bmp = Borderify(bmp);
+                if (temp != IMG[i])
+                {
+                    temp.Dispose();
+                }
+                //Bitmap B = LB[i];
+                Bitmap B = bmp;
                 if (scalemismatch)
                 {
                     double D = (((double)X / B.Width));
@@ -457,12 +558,18 @@ namespace ComicLayouter
 
                 if (Borders.Seperator <= 0)
                 {
-                    Y -= BH2;
+                    //Y -= BH2;
+                    Y -= Borders.Border.Height;
                 }
                 if (i < IMG.Count - 1)
                 {
                     Y += Borders.Seperator;
                 }
+                if (B != IMG[i])
+                {
+                    B.Dispose();
+                }
+                GC.Collect();
             }
             G.Dispose();
             return ret;
@@ -491,8 +598,10 @@ namespace ComicLayouter
                         {
                             if (MessageBox.Show(this, "apngasm.exe is missing, comiclayouter needs this program to create animated png files.\n\nDo you want to go to the website to get it?", "Missing apng assembler", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                             {
-                                MessageBox.Show("Make sure not to get the gui version of apngasm(bin-win32.zip).\nPlace apngasm.exe into the comiclayouter directory once downloaded");
-                                System.Diagnostics.Process.Start("http://sourceforge.net/projects/apngasm/files/");
+                                //MessageBox.Show("Make sure not to get the gui version of apngasm(bin-win32.zip).\nPlace apngasm.exe into the comiclayouter directory once downloaded");
+                                //System.Diagnostics.Process.Start("http://sourceforge.net/projects/apngasm/files/");
+                                MessageBox.Show("Place apngasm.exe into the comiclayouter directory once downloaded");
+                                System.Diagnostics.Process.Start("http://sourceforge.net/projects/apngasm/files/2.9/apngasm-2.9-bin-win32.zip/download");
                             }
                             
                             return;
@@ -766,6 +875,12 @@ namespace ComicLayouter
                         DDel = D;
                     }
                     TimeSpan TS = TimeSpan.FromMilliseconds((int)(DDel / 10f));
+                    /*Bitmap B = new Bitmap(img[i].Width, img[0].Height, PixelFormat.Format32bppArgb);
+                    Graphics GB = Graphics.FromImage(B);
+                    GB.DrawImage(img[i],Point.Empty);
+                    GB.Dispose();
+                    G.AddFrame(B, (int)(DDel / 10f));
+                    B.Dispose();*/
                     G.AddFrame(img[i], (int)(DDel / 10f));
                     T += P;
                 }
@@ -794,6 +909,7 @@ namespace ComicLayouter
         }
         public void LoadImages(string[] SS)
         {
+            //panel1.Visible = false;
             for (int i = 0; i < SS.Length; i++)
             {
                 if (System.IO.File.Exists(SS[i]))
@@ -801,7 +917,7 @@ namespace ComicLayouter
                     var ok = true;
                     if (SS[i].EndsWith(".gif"))
                     {
-                        if (MessageBox.Show("you have chosen to load in a gif file\nanimated gifs are not fast too load(if its not animated then it wont matter)", "load gif?", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
+                        if (MessageBox.Show("you have chosen to load in a gif file\nanimated gifs load very slowly(if its not animated then it wont matter)\n\nUsing \"Import animation\" handles animated gifs better(requires ffmpeg.exe).", "load gif?", MessageBoxButtons.OKCancel) == System.Windows.Forms.DialogResult.OK)
                         {
                             if (!System.IO.Directory.Exists("temp"))
                             {
@@ -842,6 +958,7 @@ namespace ComicLayouter
                 }
                 
             }
+            //panel1.Visible = true;
         }
         /// <summary>
         /// for multithreaded image saving.
@@ -1318,7 +1435,7 @@ namespace ComicLayouter
         /// <param name="e"></param>
         private void button7_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("ComicLayouter "+version+" by RSGmaker\n\nF8:(GIF)Individual frame delay(cannot be cleared afterwards)\nF9:CropControl(no preview)\nF10:Auto PrintScreen Capture(saves captures into \"temp\" folder)", "About");
+            MessageBox.Show("ComicLayouter Suite"+version+" by RSGmaker\n\nF8:(GIF)Individual frame delay(cannot be cleared afterwards)\nF9:CropControl(no preview)\nF10:Auto PrintScreen Capture(saves captures into \"temp\" folder)", "About");
         }
         int MV;
         int MT = 0;
@@ -1464,6 +1581,11 @@ namespace ComicLayouter
         private void Form1_Load(object sender, EventArgs e)
         {
             Application.AddMessageFilter(new WalfasWindowClickFilter());
+            if (System.IO.File.Exists("ffmpeg.exe"))
+            {
+                importAnimationToolStripMenuItem.Visible = true;
+            }
+            settings = new CLSettings();
         }
 
         private void Form1_ResizeEnd(object sender, EventArgs e)
@@ -1645,42 +1767,55 @@ namespace ComicLayouter
                 }
             }*/
 
-            var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-            using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-            using (var results = searcher.Get())
+            bool autodetect = true;
+            if (settings.imageeditor != "")
             {
-                var query = from p in Process.GetProcesses()
-                            join mo in results.Cast<ManagementObject>()
-                            //on true equals true
-                            on p.Id equals (int)(uint)mo["ProcessId"]
-                            select new
-                            {
-                                Process = p,
-                                Path = (string)mo["ExecutablePath"],
-                                CommandLine = (string)mo["CommandLine"],
-                            };
-                foreach (var item in query)
+                if (System.IO.File.Exists(settings.imageeditor))
                 {
-                    // Do what you want with the Process, Path, and CommandLine
-                    //item.Process
+                    path = settings.imageeditor;
+                    name = System.IO.Path.GetFileNameWithoutExtension(settings.imageeditor);
+                    autodetect = false;
+                }
+            }
+            if (autodetect)
+            {
+                var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                using (var results = searcher.Get())
+                {
+                    var query = from p in Process.GetProcesses()
+                                join mo in results.Cast<ManagementObject>()
+                                on p.Id equals (int)(uint)mo["ProcessId"]
+                                //on true equals true
+                                select new
+                                {
+                                    Process = p,
+                                    Path = (string)mo["ExecutablePath"],
+                                    CommandLine = (string)mo["CommandLine"],
+                                };
+                    foreach (var item in query)
+                    {
+                        // Do what you want with the Process, Path, and CommandLine
+                        //item.Process
 
-                    if (item.Process.ProcessName.ToLower() == "paintdotnet")
-                    {
-                        //path = @"C:\Program Files\Paint.NET\PaintDotNet.exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
-                    }
-                    if (item.Process.ProcessName.Contains("gimp"))
-                    {
-                        //path = @"C:\Program Files\GIMP 2\bin\" + item.Process.ProcessName + ".exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
-                    }
-                    if (item.Process.ProcessName.ToLower() == "mspaint" && name == "")
-                    {
-                        //path = @"C:\Windows\System32\mspaint.exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
+                        if (item.Process.ProcessName.ToLower() == "paintdotnet")
+                        {
+                            //path = @"C:\Program Files\Paint.NET\PaintDotNet.exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
+                        if (item.Process.ProcessName.Contains("gimp"))
+                        {
+                            //path = @"C:\Program Files\GIMP 2\bin\" + item.Process.ProcessName + ".exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
+                        if (item.Process.ProcessName.ToLower() == "mspaint" && name == "")
+                        {
+                            //path = @"C:\Windows\System32\mspaint.exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
                     }
                 }
             }
@@ -1738,42 +1873,55 @@ namespace ComicLayouter
                     cp = item;
                 }
             }*/
-            var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
-            using (var searcher = new ManagementObjectSearcher(wmiQueryString))
-            using (var results = searcher.Get())
+            bool autodetect = true;
+            if (settings.imageeditor!="")
             {
-                var query = from p in Process.GetProcesses()
-                            join mo in results.Cast<ManagementObject>()
-                            on p.Id equals (int)(uint)mo["ProcessId"]
-                            //on true equals true
-                            select new
-                            {
-                                Process = p,
-                                Path = (string)mo["ExecutablePath"],
-                                CommandLine = (string)mo["CommandLine"],
-                            };
-                foreach (var item in query)
+                if (System.IO.File.Exists(settings.imageeditor))
                 {
-                    // Do what you want with the Process, Path, and CommandLine
-                    //item.Process
+                    path = settings.imageeditor;
+                    name = System.IO.Path.GetFileNameWithoutExtension(settings.imageeditor);
+                    autodetect = false;
+                }
+            }
+            if (autodetect)
+            {
+                var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+                using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+                using (var results = searcher.Get())
+                {
+                    var query = from p in Process.GetProcesses()
+                                join mo in results.Cast<ManagementObject>()
+                                on p.Id equals (int)(uint)mo["ProcessId"]
+                                //on true equals true
+                                select new
+                                {
+                                    Process = p,
+                                    Path = (string)mo["ExecutablePath"],
+                                    CommandLine = (string)mo["CommandLine"],
+                                };
+                    foreach (var item in query)
+                    {
+                        // Do what you want with the Process, Path, and CommandLine
+                        //item.Process
 
-                    if (item.Process.ProcessName.ToLower() == "paintdotnet")
-                    {
-                        //path = @"C:\Program Files\Paint.NET\PaintDotNet.exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
-                    }
-                    if (item.Process.ProcessName.Contains("gimp"))
-                    {
-                        //path = @"C:\Program Files\GIMP 2\bin\" + item.Process.ProcessName + ".exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
-                    }
-                    if (item.Process.ProcessName.ToLower() == "mspaint" && name == "")
-                    {
-                        //path = @"C:\Windows\System32\mspaint.exe";
-                        path = item.Path;
-                        name = item.Process.ProcessName;
+                        if (item.Process.ProcessName.ToLower() == "paintdotnet")
+                        {
+                            //path = @"C:\Program Files\Paint.NET\PaintDotNet.exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
+                        if (item.Process.ProcessName.Contains("gimp"))
+                        {
+                            //path = @"C:\Program Files\GIMP 2\bin\" + item.Process.ProcessName + ".exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
+                        if (item.Process.ProcessName.ToLower() == "mspaint" && name == "")
+                        {
+                            //path = @"C:\Windows\System32\mspaint.exe";
+                            path = item.Path;
+                            name = item.Process.ProcessName;
+                        }
                     }
                 }
             }
@@ -1802,6 +1950,7 @@ namespace ComicLayouter
                 ShowInTaskbar = false;
                 Hide();
                 bool ok = false;
+                string pname = P.ProcessName;
                 //wait and hide until the image has been saved or until the editor is closed.
                 //the reason it hides is so the user can't try to interact with a frozen comiclayouter.
                 while (!ok)
@@ -1809,7 +1958,20 @@ namespace ComicLayouter
                     System.Threading.Thread.Sleep(500);
                     if ((cp == null || cp.HasExited) && P.HasExited)
                     {
-                        ok = true;
+                        //ok = true;
+                        Process[] L = Process.GetProcessesByName(pname);
+                        if (L != null && L.Length>0)
+                        {
+                            cp = L[0];
+                            if ((cp == null || cp.HasExited) && P.HasExited)
+                            {
+                                ok = true;
+                            }
+                        }
+                        else
+                        {
+                            ok = true;
+                        }
                     }
                     if (!System.IO.File.GetLastWriteTime(s).Equals(D))
                     {
@@ -1837,7 +1999,7 @@ namespace ComicLayouter
             if (WW == null || WW.IsDisposed)
             {
                 //determine whether to use flashs activeX directly to run create.swf or use the default internet explorer engine
-                if (System.IO.File.Exists("Interop.ShockwaveFlashObjects.dll"))
+                if (System.IO.File.Exists("Interop.ShockwaveFlashObjects.dll") && settings.useflashengine)
                 {
                     try
                     {
@@ -2004,9 +2166,10 @@ namespace ComicLayouter
                                 {
                                     System.IO.FileStream F = new System.IO.FileStream(images[c], System.IO.FileMode.Open);
                                     Bitmap B = (Bitmap)Bitmap.FromStream(F);
-                                    F.Close();
                                     panel.Add(B);
                                     c++;
+                                    F.Close();
+                                    F.Dispose();
                                 }
 
                                 if (panel.Count > 0)
@@ -2052,6 +2215,10 @@ namespace ComicLayouter
                         if (load_animated_comic_on_finish)
                         {
                             anicomics.Add(B);
+                        }
+                        else
+                        {
+                            B.Dispose();
                         }
                         i++;
                     }
@@ -2127,6 +2294,357 @@ namespace ComicLayouter
             {
                 Bitmap B = new Bitmap(img[SelectedPanel.ind]);
                 LoadImages("", B);
+            }
+        }
+        public void OpenProject(string f,bool import=false)
+        {
+            if (!System.IO.File.Exists(f))
+            {
+                return;
+            }
+            if (!import)
+            {
+                //clear all
+                button3_Click(null, null);
+            }
+            XmlReader xml = XmlReader.Create(f);
+            xml.ReadStartElement("Project");
+
+            string s = System.IO.Path.GetDirectoryName(f) + "\\" + System.IO.Path.GetFileNameWithoutExtension(f);
+            int k = 0;
+            int start = img.Count;
+            string error = "";
+            if (!System.IO.Directory.Exists(s))
+            {
+                //System.IO.Directory.CreateDirectory(s);
+                return;
+            }
+            string ver = "";
+            string[] files = System.IO.Directory.GetFiles(s,"*.png");
+            s = s + "\\";
+            try
+            {
+                xml.ReadStartElement("General");
+                int count = int.Parse(xml.ReadElementString("FrameCount"));
+
+                //List<string> L = new List<string>(count);
+                string[] paths = new string[count];
+                while (k < count)
+                {
+                    //img[k].Save(s + "panel" + ("" + k).PadLeft(5, '0') + ".png");
+                    paths[k] = files[k];
+                    k++;
+                }
+                LoadImages(paths);
+                if (!import)
+                {
+                    defaultdelay = int.Parse(xml.ReadElementString("DefaultDelay"));
+                    widthMismatchStretchingToolStripMenuItem.Checked = Boolean.Parse(xml.ReadElementString("WidthMatch"));
+                }
+                ver = xml.ReadElementString("Version");
+                xml.ReadEndElement();
+            }
+            catch
+            {
+                error = "General";
+            }
+
+            try
+            {
+                xml.ReadStartElement("Stretch");
+                if (!import)
+                {
+                    Stretch.Width = int.Parse(xml.ReadElementString("Width"));
+                    Stretch.Height = int.Parse(xml.ReadElementString("Height"));
+                }
+                xml.ReadEndElement();
+            }
+            catch
+            {
+                error = "Stretch";
+            }
+
+            try
+            {
+                xml.ReadStartElement("Borders");
+                if (!import)
+                {
+                    Borders.BorderColor = Color.FromArgb(int.Parse(xml.ReadElementString("BorderColor")));
+                    Borders.SeperatorColor = Color.FromArgb(int.Parse(xml.ReadElementString("SeperatorColor")));
+                    Borders.OutlineColor = Color.FromArgb(int.Parse(xml.ReadElementString("OutlineColor")));
+                    Borders.Width = int.Parse(xml.ReadElementString("Width"));
+                    Borders.Height = int.Parse(xml.ReadElementString("Height"));
+                    Borders.Seperator = int.Parse(xml.ReadElementString("Seperator"));
+                    Borders.Outline = int.Parse(xml.ReadElementString("Outline"));
+                }
+                xml.ReadEndElement();
+            }
+            catch
+            {
+                error = "Borders";
+            }
+
+            try
+            {
+                xml.ReadStartElement("Crop");
+                if (!import)
+                {
+                    Cropper.IX = int.Parse(xml.ReadElementString("Left"));
+                    Cropper.IX2 = int.Parse(xml.ReadElementString("Right"));
+                    Cropper.IY = int.Parse(xml.ReadElementString("Top"));
+                    Cropper.IY2 = int.Parse(xml.ReadElementString("Bottom"));
+                    Cropper.anchorH = int.Parse(xml.ReadElementString("AnchorH"));
+                    Cropper.anchorV = int.Parse(xml.ReadElementString("AnchorV"));
+                }
+                xml.ReadEndElement();
+            }
+            catch
+            {
+                error = "Crop";
+            }
+
+            try
+            {
+                xml.ReadStartElement("Animation");
+                try
+                {
+                    xml.ReadStartElement("Timing");
+
+                    bool ok = true;
+                    int depth = 0;
+                    while (ok)
+                    {
+                        ok = xml.Read();
+                        if (ok && xml.IsStartElement())
+                        {
+                            //depth++;
+                            int ind = int.Parse(xml.GetAttribute("Index"));
+                            int del = int.Parse(xml.GetAttribute("Delay"));
+                            ComicPanel C = ((ComicPanel)panel1.Controls[ind+start]);
+                            C.delay = del;
+                        }
+                        else
+                        {
+                            depth = -1;
+                        }
+                        /*if (ok && xml.NodeType == XmlNodeType.EndElement)
+                        {
+                            depth--;
+                        }*/
+                        if (depth < 0)
+                        {
+                            ok = false;
+                        }
+                    }
+                    //ommit the first end, since the above code already escaped out one of them.
+                    //xml.ReadEndElement();
+                    xml.ReadEndElement();
+                }
+                catch
+                {
+                    error = "Animation timing";
+                }
+                try
+                {
+                    xml.ReadStartElement("Audio");
+                    if (!import)
+                    {
+                        audiopath = xml.ReadElementString("Path");
+                        if (audiopath != "" && GP != null && !GP.IsDisposed)
+                        {
+                            GP.advmenu.LoadAudio(audiopath, false);
+                        }
+                    }
+                    xml.ReadEndElement();
+                }
+                catch
+                {
+                    error = "Animation audio";
+                }
+
+                xml.ReadEndElement();
+            }
+            catch
+            {
+                error = "Animation";
+            }
+
+
+            xml.ReadEndElement();
+            xml.Close();
+
+            if (error != "")
+            {
+                string err = "An error seems to have occured when attempting to load\"" + error + "\".\nSome of the data may not fully load correctly.";
+                if (ver != version)
+                {
+                    err = err + "\nThe data does not match this version of comiclayouter, this is likely the issue.";
+                }
+                MessageBox.Show(err);
+            }
+        }
+        public void SaveProject(string f)
+        {
+            if (System.IO.File.Exists(f))
+            {
+                System.IO.File.Delete(f);
+            }
+            XmlWriterSettings XS = new XmlWriterSettings();
+            XS.Indent = true;
+            XmlWriter xml = XmlWriter.Create(f, XS);
+            xml.WriteStartDocument();
+            xml.WriteStartElement("Project");
+
+            xml.WriteStartElement("General");
+            xml.WriteElementString("FrameCount", "" + img.Count);
+            xml.WriteElementString("DefaultDelay", "" + defaultdelay);
+            xml.WriteElementString("WidthMatch", "" + widthMismatchStretchingToolStripMenuItem.Checked);
+            xml.WriteElementString("Version", "" + version);
+            xml.WriteEndElement();
+
+
+            xml.WriteStartElement("Stretch");
+            xml.WriteElementString("Width", "" + Stretch.Width);
+            xml.WriteElementString("Height", "" + Stretch.Height);
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("Borders");
+            xml.WriteElementString("BorderColor", "" + Borders.BorderColor.ToArgb());
+            xml.WriteElementString("SeperatorColor", "" + Borders.SeperatorColor.ToArgb());
+            xml.WriteElementString("OutlineColor", "" + Borders.OutlineColor.ToArgb());
+            xml.WriteElementString("Width", "" + Borders.Border.Width);
+            xml.WriteElementString("Height", "" + Borders.Border.Height);
+            xml.WriteElementString("Seperator", "" + Borders.Seperator);
+            xml.WriteElementString("Outline", "" + Borders.Outline);
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("Crop");
+            xml.WriteElementString("Left", "" + Cropper.IX);
+            xml.WriteElementString("Right", "" + Cropper.IX2);
+            xml.WriteElementString("Top", "" + Cropper.IY);
+            xml.WriteElementString("Bottom", "" + Cropper.IY2);
+            xml.WriteElementString("AnchorH", "" + Cropper.anchorH);
+            xml.WriteElementString("AnchorV", "" + Cropper.anchorV);
+            xml.WriteEndElement();
+
+            xml.WriteStartElement("Animation");
+            xml.WriteStartElement("Timing");
+            int k = 0;
+            //((ComicPanel)panel1.Controls[i])
+            while (k < img.Count)
+            {
+                ComicPanel C = ((ComicPanel)panel1.Controls[k]);
+                if (C.delay > 0)
+                {
+                    xml.WriteStartElement("Frame");
+                    xml.WriteAttributeString("Index", "" + k);
+                    xml.WriteAttributeString("Delay", "" + C.delay);
+                    //xml.WriteElementString("Index", "" + k);
+                    //xml.WriteElementString("Delay", "" + C.delay);
+                    xml.WriteEndElement();
+                }
+                k++;
+            }
+            xml.WriteEndElement();
+            //if (GP != null)
+            //if (audiopath != "")
+            {
+                xml.WriteStartElement("Audio");
+                xml.WriteElementString("Path", "" + audiopath);
+                xml.WriteEndElement();
+            }
+            xml.WriteEndElement();
+
+            xml.WriteEndElement();
+            xml.WriteEndDocument();
+            xml.Close();
+            string s = System.IO.Path.GetDirectoryName(f) + "\\" + System.IO.Path.GetFileNameWithoutExtension(f);
+            k = 0;
+            if (!System.IO.Directory.Exists(s))
+            {
+                System.IO.Directory.CreateDirectory(s);
+            }
+            s = s + "\\";
+            while (k < img.Count)
+            {
+                img[k].Save(s+"panel" + ("" + k).PadLeft(5, '0') + ".png");
+                k++;
+            }
+        }
+
+        private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                SaveProject(saveFileDialog2.FileName);
+            }
+        }
+
+        private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                OpenProject(openFileDialog2.FileName);
+            }
+            
+        }
+
+        private void importProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog2.ShowDialog() == DialogResult.OK)
+            {
+                OpenProject(openFileDialog2.FileName,true);
+            }
+        }
+
+        private void importAnimationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog3.ShowDialog() == DialogResult.OK)
+            {
+                string f = openFileDialog3.FileName;
+                if (!Directory.Exists("Iseq"))
+                {
+                    Directory.CreateDirectory("Iseq");
+                }
+                string[] files = Directory.GetFiles("Iseq");
+                int i = 0;
+                while (i < files.Length)
+                {
+                    File.Delete(files[i]);
+                    i++;
+                }
+
+                //string command = "ffmpeg -framerate " + fps + "/1 -i Fseq/frame%05d.png " + video_args + Acmd + "-r 30 -pix_fmt yuv420p -shortest \"" + saveFileDialog1.FileName + "\"";
+                string command = "ffmpeg -i \"" + f + "\" -f image2 Iseq/frame-%5d.png";
+                //string command = "ffmpeg -i \"" + f + "\" -f image2 -vf \"select = gt(scene\\, 0.0098)\" Iseq/frame-%5d.png";
+                ///string command = "ffmpeg -i \"" + f + "\" -f image2 -vf \"select = gt(scene\\, 0.3)\" Iseq/frame-%5d.png";
+                //strCmdText = /*"/C " + */command;
+                //strCmdText = "/C copy /b Image1.jpg + Archive.rar Image2.jpg";
+                Process P = Process.Start("CMD.exe", "/C " + command);
+                P.WaitForExit();
+                files = Directory.GetFiles("Iseq");
+
+                //if (MessageBox.Show("Skip duplicate files?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                //if (false)
+                {
+                    //only import unique files
+                    List<string> load = new List<string>();
+                    i = 0;
+                    long size = 0;
+                    while (i < files.Length)
+                    {
+                        long sz = new FileInfo(files[i]).Length;
+                        if (size != sz)
+                        {
+                            load.Add(files[i]);
+                            size = sz;
+                        }
+                        i++;
+                    }
+                    files = load.ToArray();
+                }
+                LoadImages(files);
+                //LoadImages(load.ToArray());
             }
         }
     }

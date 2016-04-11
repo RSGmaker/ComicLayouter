@@ -117,11 +117,13 @@ namespace Gif.Components
 		/* bias and freq arrays for learning */
 		protected int[] freq = new int[netsize];
 		protected int[] radpower = new int[initrad];
-		/* radpower for precomputation */
 
-		/* Initialise network in range (0,0,0) to (255,255,255) and set parameters
+        protected static int[] powers;// = new int[initrad];
+        /* radpower for precomputation */
+
+        /* Initialise network in range (0,0,0) to (255,255,255) and set parameters
 		   ----------------------------------------------------------------------- */
-		public NeuQuant(byte[] thepic, int len, int sample) 
+        public NeuQuant(byte[] thepic, int len, int sample) 
 		{
 
 			int i;
@@ -132,15 +134,29 @@ namespace Gif.Components
 			samplefac = sample;
 
 			network = new int[netsize][];
-			for (i = 0; i < netsize; i++) 
+
+            int skip = intbias / netsize;
+            for (i = 0; i < netsize; i++) 
 			{
 				network[i] = new int[4];
 				p = network[i];
 				p[0] = p[1] = p[2] = (i << (netbiasshift + 8)) / netsize;
-				freq[i] = intbias / netsize; /* 1/netsize */
-				bias[i] = 0;
+                //freq[i] = intbias / netsize; /* 1/netsize */
+                freq[i] = skip;
+                bias[i] = 0;
 			}
-		}
+
+            if (powers == null)
+            {
+                powers = new int[128];
+                for (i = 0; i < powers.Length; i++)
+                {
+                    //int R2 = rad * rad;
+                    //radpower[i] = alpha * (((R2 - i * i) * radbias) / (R2));
+                    powers[i] = i * i;
+                }
+            }
+        }
 	
 		public byte[] ColorMap() 
 		{
@@ -242,9 +258,13 @@ namespace Gif.Components
 			rad = radius >> radiusbiasshift;
 			if (rad <= 1)
 				rad = 0;
-			for (i = 0; i < rad; i++)
-				radpower[i] =
-					alpha * (((rad * rad - i * i) * radbias) / (rad * rad));
+            for (i = 0; i < rad; i++)
+            {
+                //int R2 = rad * rad;
+                int R2 = powers[rad];
+                radpower[i] =
+                    alpha * (((R2 - powers[i]) * radbias) / (R2));
+            }
 
 			//fprintf(stderr,"beginning 1D learning: initial radius=%d\n", rad);
 
@@ -291,9 +311,13 @@ namespace Gif.Components
 					rad = radius >> radiusbiasshift;
 					if (rad <= 1)
 						rad = 0;
-					for (j = 0; j < rad; j++)
-						radpower[j] =
-							alpha * (((rad * rad - j * j) * radbias) / (rad * rad));
+                    for (j = 0; j < rad; j++)
+                    {
+                        //int R2 = rad * rad;
+                        int R2 = powers[rad];
+                        radpower[j] =
+                            alpha * (((R2 - powers[j]) * radbias) / (R2));
+                    }
 				}
 			}
 			//fprintf(stderr,"finished 1D learning: readonly alpha=%f !\n",((float)alpha)/initalpha);
@@ -421,15 +445,20 @@ namespace Gif.Components
 			while ((j < hi) || (k > lo)) 
 			{
 				a = radpower[m++];
-				if (j < hi) 
+                //int z = a / alpharadbias;
+                float z = a / (float)alpharadbias;
+                if (j < hi) 
 				{
 					p = network[j++];
 					try 
 					{
-						p[0] -= (a * (p[0] - b)) / alpharadbias;
+                        /*p[0] -= (a * (p[0] - b)) / alpharadbias;
 						p[1] -= (a * (p[1] - g)) / alpharadbias;
-						p[2] -= (a * (p[2] - r)) / alpharadbias;
-					} 
+						p[2] -= (a * (p[2] - r)) / alpharadbias;*/
+                        p[0] -= (int)(z * (p[0] - b));
+                        p[1] -= (int)(z * (p[1] - g));
+                        p[2] -= (int)(z * (p[2] - r));
+                    } 
 					catch
 					{
 					} // prevents 1.3 miscompilation
@@ -439,10 +468,13 @@ namespace Gif.Components
 					p = network[k--];
 					try 
 					{
-						p[0] -= (a * (p[0] - b)) / alpharadbias;
+                        /*p[0] -= (a * (p[0] - b)) / alpharadbias;
 						p[1] -= (a * (p[1] - g)) / alpharadbias;
-						p[2] -= (a * (p[2] - r)) / alpharadbias;
-					} 
+						p[2] -= (a * (p[2] - r)) / alpharadbias;*/
+                        p[0] -= (int)(z * (p[0] - b));
+                        p[1] -= (int)(z * (p[1] - g));
+                        p[2] -= (int)(z * (p[2] - r));
+                    } 
 					catch 
 					{
 					}
@@ -456,11 +488,16 @@ namespace Gif.Components
 		{
 
 			/* alter hit neuron */
+
 			int[] n = network[i];
-			n[0] -= (alpha * (n[0] - b)) / initalpha;
+            float z = alpha / (float)initalpha;
+            /*n[0] -= (alpha * (n[0] - b)) / initalpha;
 			n[1] -= (alpha * (n[1] - g)) / initalpha;
-			n[2] -= (alpha * (n[2] - r)) / initalpha;
-		}
+			n[2] -= (alpha * (n[2] - r)) / initalpha;*/
+            n[0] -= (int)(z * (n[0] - b));
+            n[1] -= (int)(z * (n[1] - g));
+            n[2] -= (int)(z * (n[2] - r));
+        }
 	
 		/* Search for biased BGR values
 		   ---------------------------- */

@@ -38,12 +38,20 @@ namespace ComicLayouter
             {
                 return trackBar3.Value;
             }
+            set
+            {
+                trackBar3.Value = value;
+            }
         }
         public int IY
         {
             get
             {
                 return trackBar4.Value;
+            }
+            set
+            {
+                trackBar4.Value = value;
             }
         }
         public int IX2
@@ -52,12 +60,20 @@ namespace ComicLayouter
             {
                 return trackBar1.Value;
             }
+            set
+            {
+                trackBar1.Value = value;
+            }
         }
         public int IY2
         {
             get
             {
                 return trackBar2.Value;
+            }
+            set
+            {
+                trackBar2.Value = value;
             }
         }
         public Size CropSize(Size size)

@@ -118,9 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>Create.swf controls:
-
-Insert = Creates a new character.
+    <value>Insert = Creates a new character.
 Delete = Deletes the selected target.
 G = If the gravity well is active, this will lock it to your cursor until you click something else.
 T = If you have something targeted, this will lock it to your cursor until you click something else.
@@ -142,10 +140,7 @@ Ctrl+Left/Right = Scale.
 [ or ] = Cycles through targets on stage. Holding shift will cycle through only pinned targets.</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
-    <value>ComicLayouter create.swf controls:
-
-
-F1 = Shows this window
+    <value>F1 = Shows this window
 F3 = Open Spellchecker
 F4/alt-enter = toggle fullscreen(disable maximize first)
 F5 = auto capture, captures frames at an interval(be very careful with this,used for WalfasDesktop animations)
@@ -156,6 +151,82 @@ F11 = Set custom walfas window resolution
 F12 = Activates cropping tool, left click sets position, right click changes its size(use this with F5 and F6)
 
 Right click = opens a custom menu
+Control-R = Restart create.swf
+Alt = Opens right click menu
 </value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>If create.swf does not load, you can update Internet Explorer's flash,
+open https://get.adobe.com/flashplayer in internet explorer(it must be internet explorer, firefox/chrome etc will not work).
+
+If that doesn't work, try deleting:AxInterop.ShockwaveFlashObjects.dll and Interop.ShockwaveFlashObjects.dll.
+These files allow ComicLayouter to use flash directly, when removed ComicLayouter uses Internet Explorer to run flash instead.
+</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>The very basic of basics is the manipulation of characters. You'll notice that you start with a character already on the stage. When you click on this character, you target it. You can drag the character around by dragging their body. Dragging their head will rotate them around. Holding shift and dragging either will scale them. If you hold ctrl and drag the head, then it will drag the character instead of rotating them. Double clicking them will open their options menu.
+
+When you target a character, or anything for that matter, you will notice that a target frame appears on the bottom. If you click on this, you will get additional options. From here, you can change various parts of the character, or change lock settings.
+
+If you would like to add additional characters, you can do so from the main menu by either selecting New Character or Load Preset. Presets will load premade Touhou characters onto the stage.
+
+The manipulation of objects is pretty similar. Due to the fact that most have no heads, you must ctrl+drag them to rotate them. Everything else is just like controlling a character. Snapshots are manipulated the same way as objects.
+
+The manipulation of text bubbles are a little different. Dragging around the tail (or edge if it's the box) will rotate them around. Dragging the main part will drag them around. Holding shift and dragging will scale them as normal. Now, there are additional options to affect just the bubble itself. If you hold ctrl and drag, it will drag just the bubble. If you hold ctrl+shift and drag, it will scale just the bubble. Bubble scaling is different in that it doesn't stick to the same aspect ratio. This allows you to get different shaped bubbles.
+
+You can also change the font of the text within text bubbles. When you have a text bubble selected, open it's target menu and you will see the Set Font option. Choose one of the fonts to change the text in the bubble to that font. You can also Colorize the text within bubbles by pressing C or selecting Colorize from the target menu.</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>To make clusters, first create an object. Then open it's menu and select clusterize. You should now have a cluster of them spiraling outwards. All of these will move together and can be shift/ctrl manipulated the same as objects. If you go into their options menu, you will notice a lot of new things.
+
+Rows and Columns determine how many shots are in the cluster. Distance determines how far out they go. Start Distance is how far away from the origin they start.
+
+Spiral indicates the intensity of the spiral motion. Setting this to zero will create straight lines outwards. RMod will rotate each individual bullet by the angle you set. This can be used to fix bullets that don't start facing the correct direction, such as Gungnir.
+
+The shot direction setting will change the bullets' facing relative to the cluster's center point. You can move the center point by activating the manipulator tool and moving the P orb (pressing M will activate the manipulator tool).
+
+To make rain, first create an object. Then open it's menu and select Rain!. Rain will take up the entire stage, so if you've got things behind it that you want to move then you must send the rain to back using the edit options. Using the manipulator tool and rotating it will cause the objects to fall in a different direction. Scaling it changes the size of the drops. In it's options menu, you can set the density of the rain, as well as it's X/Y/Rotation speeds.
+
+To make snapshots, simply press S. This will capture everything in the stage into a still image and place that image onto the stage as an object. Snapshots only capture the viewable area of the create.swf, so anything out of sight will be cut off from the snapshot. In the snapshot's target menu, you will see the common object options as well as a filter option. The filter option allows you to alter the snapshot's color or make it blur. Another unique feature of snapshots is that you can change it's opacity setting by going into it's options. This allows you to make transparent overlays.</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>If you go to the main menu, you can access the background menu. From here, you can select a background for the stage, as well as set various background settings.
+
+The stage menu will list various mass effect actions. If you want to delete everything off the stage, you can use the clear option from here.
+
+The options menu is where to go to change the way some other functions behave.
+Click stops spin will make clicking the characters stop their spinning motion.
+Mute all sounds will turn off every sound in the create.swf.
+Spawn presets with items will make presets you load spawn with items and accessories.
+Mass character locks will make the lock and unlock all functions in the global locks also affect the locks of each character. Individual global locks will not affect character locks regardless.
+Old Quick Change will make the quick change option in the character options menu change only the hat, hair, body, arms, and shoes parts.
+Keep colors will make the colored parts stay the same when switching parts.
+Head Rotates Characters makes dragging the head of characters rotate them by default.
+Switch Shift/Ctrl Arrows will change shift+left/right into scaling and ctrl+left/right into rotation.
+Keylock Pinned will disable keyboard shortcuts from affecting pinned objects.
+Untargetable Pinned will make pinned objects untargetable by mouse clicks.
+
+You can also set which default character is spawned when you first open the create.swf by entering their preset name into the default char box. If you enter some other name, then a new character will spawn with that name. If you enter a DNA string with the DNA- prefix, then it will spawn that character. The arrow speed box you find here is to set the rate at which arrow keys move objects.
+
+The colorize menu is used to change the color of parts(currently only hair). Move the sliders to change the color. Alternatively, you can input a hexadecimal color code into the RGB Code box to change color.</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>DNA strings can be gotten by selecting show DNA from either the character's menu or from the clone capsule menu when it's occupied. You can save this string onto a txt file or something to save your character. If you double click on the clone capsule while it's empty, you will get the option to input a DNA string. Paste your code in your character will spawn inside the capsule. You can either eject it or spawn clones of it. If you want your character to be spawned each time you go into the create.swf, you can go to the options in the main menu and the DNA code with the prefix DNA- along with it onto the default character box.
+
+You can now also save characters directly by selecting save from the target menu. You can then recreate these characters from the file menu.</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>You can import external images as snapshots by going to Menu &gt; Insert &gt; Import. Supported file types are jpg, png, and gif. If you try to import an animated gif, only the first frame will be shown. Importing may take time to load depending on the speed of your connection.
+
+Due to the security restrictions of flash, you may only import images from walfas.org on the online version. In order to be able to import images from anywhere, you must download the create.swf and run it locally.</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Scenes are displayed at the top left. Clicking the scene label will open up the scene menu. To create a scene, go to Scene Info and choose a name for your scene, then select "Save Scene". You can now load your scene from the file menu. A scene contains parts. When you select "New Part" from the scene menu, it will automatically save the part you're working on and create a new one directly after it. Loading other scenes and parts will not save your current part so you must "Save Scene" to save any changes made.
+
+Parts of a scene will play in sequence when viewing in theater mode. You can also link one scene to another scene using the Next/Prev Scene options in the scene info. Moving to linked scene puts you on the first part of that scene if it is the next scene, or the last part of it if it is the previous scene.
+
+Theater mode can be turned on in the options menu. In theater mode, when the interface is turned off, you can use the left and right arrow keys to navigate the different parts of a scene. Theater mode also makes anything pinned down unclickable when the interface is off.
+
+A video tutorial on scenes can be found here: https://www.youtube.com/watch?v=NO0IWzBS7os</value>
   </data>
 </root>

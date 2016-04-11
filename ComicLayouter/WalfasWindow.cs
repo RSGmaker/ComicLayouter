@@ -67,6 +67,7 @@ namespace ComicLayouter
         public WalfasWindow(Form1 form,bool useIE=false)
         {
             IE = useIE;
+            //IE = true;
             InitializeComponent();
             this.form1 = form;
             Crop = new Rectangle(0, 0, 0, 0);
@@ -78,6 +79,9 @@ namespace ComicLayouter
 
             form.Focus();
             webBrowser1.Focus();
+            webBrowser1.IsWebBrowserContextMenuEnabled = false;
+            //webBrowser1.Document.ActiveElement.AttachEventHandler
+            webBrowser1.Document.ContextMenuShowing += Document_ContextMenuShowing;
             Control C = webBrowser1;
             this.BackColor = Color.FromArgb(89, 89, 89);
             if (false)
@@ -92,10 +96,24 @@ namespace ComicLayouter
             ////TransparencyKey = Color.Empty;
             //SC = new TextBox();
             SC.SpellCheck.IsEnabled = true;
-            SC.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"));
+            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"))
+            {
+                SC.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"));
+            }
+            else
+            {
+                MessageBox.Show("Dictionary.txt could not be loaded, spellcheck will use the default english dictionary only.");
+            }
             
             textbuffer = "";
         }
+
+        private void Document_ContextMenuShowing(object sender, HtmlElementEventArgs e)
+        {
+            //throw new NotImplementedException();
+            contextMenuStrip1.Show(Cursor.Position);
+        }
+
         /// <summary>
         /// mouse position
         /// </summary>
@@ -165,6 +183,50 @@ namespace ComicLayouter
 
         protected override void WndProc(ref Message m)
         {
+            //mouse clicks cannot be captured from here...
+
+            /*if (m.Msg == 127 || m.Msg == 14 || m.Msg == 13)
+            {
+                //this is a basic update message lets not bother with these.
+                base.WndProc(ref m);
+                return;
+            }*/
+            
+            List<int> ID = new List<int>();
+            List<int> I = ID;
+            
+
+            
+            //text changed
+            /*ID.Add(14);
+            ID.Add(13);
+            ID.Add(12);*/
+
+            List<int> R = new List<int>();
+            I = R;
+            /*R.Add(160);
+            R.Add(174);
+            R.Add(132);
+            R.Add(528);
+
+            I.Add(33);
+            I.Add(70);
+            I.Add(28);
+            I.Add(134);
+            I.Add(6);
+            I.Add(71);*/
+            //if (m.Msg == 528 || m.Msg == 132 || m.Msg == 674)
+            /*if (R.IndexOf(m.Msg)>-1)
+            {
+                return;
+            }
+            //return;
+            if (ID.IndexOf(m.Msg) < 0)
+            {
+                //Console.WriteLine(":" + m.Msg);
+                ID.Add(-222);
+                Text = "code:" + m.Msg;
+            }*/
             if (m.Msg == (int)WM_NCHITTEST)
             {
                 m.Result = (IntPtr)HTTRANSPARENT;
@@ -283,6 +345,7 @@ namespace ComicLayouter
         const int WM_KEYUP = 0x101;
         const int WM_SYSKEYUP = 0x105;
         public int Interval;
+        
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if ((msg.Msg == WM_KEYUP) || (msg.Msg == WM_SYSKEYUP))
@@ -462,6 +525,7 @@ namespace ComicLayouter
             catch
             {
             }
+            
             if (keyData == Keys.F1)
             {
                 HelpWindow HW = new HelpWindow();
@@ -479,6 +543,11 @@ namespace ComicLayouter
             if (keyData == Keys.F6)
             {
                 DoCapture();
+            }
+            if (keyData == (Keys.Menu | Keys.Alt))
+            {
+                //DoCapture();
+                contextMenuStrip1.Show(Cursor.Position);
             }
             if (keyData == Keys.F9)
             {
@@ -551,6 +620,22 @@ namespace ComicLayouter
                     overlay1.Location = Point.Empty;
                     overlay1.BringToFront();
                     
+                }
+            }
+            if (keyData == (Keys.R | Keys.Control))
+            {
+                if (Waffle == webBrowser1)
+                {
+                    //open create.swf with IE
+                    webBrowser1.Refresh(WebBrowserRefreshOption.Completely);
+                    //webBrowser1.Navigate("file://" + System.Environment.CurrentDirectory + @"/create.swf");
+                }
+                else
+                {
+                    //open create.swf in ActiveX flash player.
+                    ((FlashPlayer)Waffle).Rewind();
+                    //((FlashPlayer)Waffle).Movie = "file://" + System.Environment.CurrentDirectory + @"/create.swf";
+                    //FlashPlayer FP = ((FlashPlayer)Waffle);
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -637,10 +722,56 @@ namespace ComicLayouter
             webBrowser1.SendToBack();
             //Controls.Remove(webBrowser1);
         }
+        private static String HexConverter(System.Drawing.Color c)
+        {
+            return "#" + c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2");
+        }
+
+        private string builddocument(Color color,bool local,string quality)
+        {
+            string style = "margin:0;padding:0;";
+            /*if (color != Color.White)
+            {
+                style = style+"background - color:"+HexConverter(color)+";";
+            }*/
+            string ret = "<html><body style=\""+style+"\">";
+            ret = ret + "<!--This file was generated by ComicLayouter, it's used to configure create.swf-->";
+            string path = "http://www.walfas.org/flash/create.swf";
+            //string path = "< EMBED type = application / x - shockwave - flash height =\"100%\" width=\"100%\" src=" + System.Environment.CurrentDirectory + "/create.swf menu=\"false\" fullscreen=\"yes\">";
+            if (local)
+            {
+                path = System.Environment.CurrentDirectory + "/create.swf";
+            }
+            string vars = "";
+            if (quality != "")
+            {
+                vars = "quality=\"" + quality + "\"";
+            }
+            //ret = ret + "< EMBED type = \"application / x - shockwave - flash\" height =\"100%\" width=\"100%\" src=\"" + path + "\" "+vars+">";
+            ret = ret + "<embed height =\"100%\" width=\"100%\" wmode=\"transparent\" src=\"" + path + "\" " + vars + ">";
+            ret = ret + "</body></html>";
+            string f = System.Environment.CurrentDirectory+"/IE-engine.html";
+            if (System.IO.File.Exists(f))
+            {
+                System.IO.File.Delete(f);
+            }
+            System.IO.StreamWriter SW = new System.IO.StreamWriter(f);
+            SW.Write(ret);
+            SW.Close();
+            return f;
+        }
         private void WalfasWindow_Load(object sender, EventArgs e)
         {
             _this = this;
             Waffle = webBrowser1;
+            //webBrowser1.Navigate()
+            /*webBrowser1.Navigate("about:blank");
+            if (webBrowser1.Document != null)
+            {
+                webBrowser1.Document.Write(string.Empty);
+            }
+            //webBrowser1.DocumentText = html;
+            webBrowser1.DocumentText = "<html><body><EMBED type=application/x-shockwave-flash height=\"100%\" width=\"100%\" src="+ System.Environment.CurrentDirectory + "/create.swf menu=\"false\" fullscreen=\"yes\"></body></html>";*/
             WI = webBrowser1.Document.DomDocument;
             if (!IE)
             {
@@ -656,6 +787,7 @@ namespace ComicLayouter
             else
             {
                 customrightclick = false;
+                customrightclick = true;
             }
             if (webBrowser1.Visible)
             {
@@ -664,7 +796,7 @@ namespace ComicLayouter
             }
             else
             {
-                TITLE = "Flash:" + TITLE;
+                //TITLE = "Flash:" + TITLE;
             }
             Text = TITLE;
             if (!System.IO.File.Exists("create.swf"))
@@ -675,13 +807,20 @@ namespace ComicLayouter
                     bool ok = false;
                     try
                     {
+                        string url = @"http://www.walfas.org/flash/create.swf";
+                        string file = "create.swf";
+                        if (MessageBox.Show("Would you like to download the extended version of create.swf?\nIf not then the original will be downloaded instead.","Download create.swf extended?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            url = @"https://github.com/RSGmaker/Create.swf-stuff/raw/master/create.swf/create.swf";
+                            file = "create.swf extended";
+                        }
                         System.Net.WebClient Client = new System.Net.WebClient();
-                        Client.DownloadFile(@"http://www.walfas.org/flash/create.swf", System.Environment.CurrentDirectory + @"/create.swf");
+                        Client.DownloadFile(url, System.Environment.CurrentDirectory + @"/create.swf");
                         Client.Dispose();
                         System.IO.FileInfo F = new System.IO.FileInfo(System.Environment.CurrentDirectory + @"/create.swf");
                         if (F.Length > 1000)
                         {
-                            MessageBox.Show("create.swf has finished downloading");
+                            MessageBox.Show(file+" has finished downloading","Success");
                             ok = true;
                         }
                     }
@@ -690,7 +829,7 @@ namespace ComicLayouter
                     }
                     if (!ok)
                     {
-                        MessageBox.Show("there was a problem downloading create.swf");
+                        MessageBox.Show("There was a problem downloading create.swf","Download error");
                     }
                 }
             }
@@ -698,8 +837,12 @@ namespace ComicLayouter
             {
                 if (Waffle == webBrowser1)
                 {
+                    this.Icon = Properties.Resources.IE;
                     //open create.swf with IE
-                    webBrowser1.Navigate("file://" + System.Environment.CurrentDirectory + @"/create.swf");
+                    webBrowser1.Navigate("file://" + builddocument(Color.Blue,true,""));
+                    //webBrowser1.Navigate("file://" + System.Environment.CurrentDirectory + @"/create.swf");
+                    /*dynamic D = webBrowser1.ActiveXInstance;
+                    D.Quality = "Low";*/
                 }
                 else
                 {
@@ -713,7 +856,8 @@ namespace ComicLayouter
                 if (Waffle == webBrowser1)
                 {
                     //open create.swf with IE
-                    webBrowser1.Navigate(@"http://www.walfas.org/flash/create.swf");
+                    //webBrowser1.Navigate(@"http://www.walfas.org/flash/create.swf");
+                    webBrowser1.Navigate("file://" + builddocument(Color.White, false, ""));
                 }
                 else
                 {
@@ -1098,6 +1242,13 @@ namespace ComicLayouter
                 FlashPlayer FP = (FlashPlayer)Waffle;
                 FP.Quality = "Low";
             }
+            else
+            {
+                if (MessageBox.Show("You are running create.swf in the IE engine.\nWe cannot edit the quality at run time externally.\nWould you still like to apply this setting?(create.swf will restart)", "Apply Setting", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    webBrowser1.Navigate("file://" + builddocument(Color.White, System.IO.File.Exists("create.swf"), "Low"));
+                }
+            }
         }
 
         private void mediumToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1110,6 +1261,13 @@ namespace ComicLayouter
                 FlashPlayer FP = (FlashPlayer)Waffle;
                 FP.Quality = "Medium";
             }
+            else
+            {
+                if (MessageBox.Show("You are running create.swf in the IE engine.\nWe cannot edit the quality at run time externally.\nWould you still like to apply this setting?(create.swf will restart)", "Apply Setting", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    webBrowser1.Navigate("file://" + builddocument(Color.White, System.IO.File.Exists("create.swf"), "Medium"));
+                }
+            }
         }
 
         private void highToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1121,6 +1279,13 @@ namespace ComicLayouter
             {
                 FlashPlayer FP = (FlashPlayer)Waffle;
                 FP.Quality = "High";
+            }
+            else
+            {
+                if (MessageBox.Show("You are running create.swf in the IE engine.\nWe cannot edit the quality at run time externally.\nWould you still like to apply this setting?(create.swf will restart)", "Apply Setting", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    webBrowser1.Navigate("file://" + builddocument(Color.White, System.IO.File.Exists("create.swf"), "High"));
+                }
             }
         }
         public void rightclick()
@@ -1137,6 +1302,10 @@ namespace ComicLayouter
                 {
                     FlashPlayer FP = (FlashPlayer)Waffle;
                     FP.BackgroundColor = colorDialog1.Color;
+                }
+                else
+                {
+                    webBrowser1.Document.BackColor = colorDialog1.Color;
                 }
             }
         }
