@@ -1322,5 +1322,15 @@ namespace ComicLayouter
             }
         }
 
+        private void WalfasWindow_Leave(object sender, EventArgs e)
+        {
+            //Remove focus from waffle, to prevent background inputs.
+            pictureBox1.Focus();
+        }
+
+        private void WalfasWindow_Enter(object sender, EventArgs e)
+        {
+            Waffle.Focus();
+        }
     }
 }

@@ -272,10 +272,14 @@
             this.Name = "WalfasWindow";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "Create.swf F1:Help";
+            this.Activated += new System.EventHandler(this.WalfasWindow_Enter);
+            this.Deactivate += new System.EventHandler(this.WalfasWindow_Leave);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WalfasWindow_FormClosed);
             this.Load += new System.EventHandler(this.WalfasWindow_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.WalfasWindow_Scroll);
             this.Click += new System.EventHandler(this.WalfasWindow_Click);
+            this.Enter += new System.EventHandler(this.WalfasWindow_Enter);
+            this.Leave += new System.EventHandler(this.WalfasWindow_Leave);
             this.Resize += new System.EventHandler(this.WalfasWindow_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
