@@ -516,6 +516,10 @@ namespace ComicLayouter
             }
             else
             {
+                if (dec.IndexOf("0")<0)
+                {
+                    dec = dec + ".0";
+                }
                 dec = "."+dec.Split('.')[1];
                 if (dec.Length>3)
                 {
