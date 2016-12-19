@@ -516,7 +516,7 @@ namespace ComicLayouter
             }
             else
             {
-                if (dec.IndexOf("0")<0)
+                if (dec.IndexOf(".")<0)
                 {
                     dec = dec + ".0";
                 }
