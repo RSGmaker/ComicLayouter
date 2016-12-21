@@ -115,9 +115,6 @@ namespace ComicLayouter
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             label1.ForeColor = Color.Blue;
             form1.SelectedPanel = this;
-            if (!ContainsFocus)
-            {
-            }
         }
         public void Unselect()
         {

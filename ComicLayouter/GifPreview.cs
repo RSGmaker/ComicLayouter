@@ -33,7 +33,7 @@ namespace ComicLayouter
 
         public string maxtime = "00:00";
 
-
+        Graphics panelG;
 
         public GifPreview(Form1 form)
         {
@@ -41,14 +41,24 @@ namespace ComicLayouter
             F = form;
             last = DateTime.Now;
             timer1.Start();
+            
+            //thetimer = new System.Threading.Timer((a) => { pictureBox1.Invalidate(); }, null, 0, 10);
             lsize = Size;
 
             advmenu = new AdvancedGifMenu();
             advmenu.gif = this;
         }
 
+        
+
         private void GifPreview_Load(object sender, EventArgs e)
         {
+            panelG = panel3.CreateGraphics();
+            panelG.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+            panelG.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+            panelG.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+            panelG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+
             if (F.SelectedPanel == null)
             {
                 if (F.panel1.Controls.Count > 0)
@@ -64,6 +74,8 @@ namespace ComicLayouter
             }
 
             DoubleBuffered = true;
+
+            
         }
         public int forcetime=0;
         private void timer1_Tick(object sender, EventArgs e)
@@ -173,7 +185,7 @@ namespace ComicLayouter
                 }*/
                 //pictureBox1.Image = F.img[F.SelBMP.ind];
             }
-            if (ok/* && forcetime<1*/)
+            if (ok/* && forcetime<1*/ && false)
             {
                 int ft = forcetime;
                 forcetime = 0;
@@ -193,18 +205,22 @@ namespace ComicLayouter
             //pictureBox1.Invalidate();
             //lastbmp = F.SelBMP;
         }
-        private void fixframe()
+
+        Bitmap buffer;
+        Graphics bufferG;
+
+        private void fixframe(bool force=false)
         {
-            if (lastframe != F.SelectedPanel && F.SelectedPanel != null)
+            if (force || (lastframe != F.SelectedPanel && F.SelectedPanel != null))
             {
                 /*if (pictureBox1.Image != null)
                 {
                     pictureBox1.Image.Dispose();
                 }*/
-                if (pictureBox1.Image != null && !F.img.Contains((Bitmap)pictureBox1.Image))
+                /*if (pictureBox1.Image != null && !F.img.Contains((Bitmap)pictureBox1.Image))
                 {
                     pictureBox1.Image.Dispose();
-                }
+                }*/
                 Bitmap B = F.img[F.SelectedPanel.ind];
                 if (F.Cropper.IWidth != 100 || F.Cropper.IHeight != 100)
                 {
@@ -219,11 +235,37 @@ namespace ComicLayouter
                 {
                     //pictureBox1.Image = new Bitmap(B);
                 }
+                if (buffer == null || !buffer.Size.Equals(panel3.Size))
+                {
+                    if (buffer != null)
+                    {
+                        bufferG.Dispose();
+                        buffer.Dispose();
+                    }
+                    buffer = new Bitmap(panel3.Width, panel3.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                    bufferG = Graphics.FromImage(buffer);
+                    bufferG.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+                    bufferG.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                    bufferG.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
 
-                Bitmap R = new Bitmap(pictureBox1.Width, pictureBox1.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
-                Graphics G = Graphics.FromImage(R);
+
+                    //the default InterpolationMode is very very slow.
+
+                    //less slow
+                    //bufferG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bilinear;
+                    //fastest
+                    bufferG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    //Text = "RND:" + new Random().Next();
+                }
+                Bitmap R = buffer;
+                Graphics G = bufferG;
+                /*Bitmap R = new Bitmap(pictureBox1.Width, pictureBox1.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                Graphics G = Graphics.FromImage(R);*/
                 G.DrawImage(B, 0, 0, R.Width, R.Height);
-                G.Dispose();
+                //G.Dispose();
+                //panelG.Clear(Color.Red);
+                //panelG.DrawImage(buffer, 0, 0);
+
                 pictureBox1.Image = R;
 
                 //pictureBox1.Invalidate();
@@ -299,6 +341,7 @@ namespace ComicLayouter
         {
             if (F.SelectedPanel.ind + 1 < F.panel1.Controls.Count)
             {
+                F.SuspendLayout();
                 ComicPanel B = (ComicPanel)F.panel1.Controls[F.SelectedPanel.ind + 1];
                 F.SelectedPanel.Unselect();
                 /*try
@@ -311,11 +354,13 @@ namespace ComicLayouter
                 }*/
                 //F.panel1.VerticalScroll.Value += B.Height;
                 B.Select();
+                F.ResumeLayout();
             }
             else
             {
                 if (F.panel1.Controls.Count > 0)
                 {
+                    F.SuspendLayout();
                     ComicPanel B = (ComicPanel)F.panel1.Controls[0];
                     F.SelectedPanel.Unselect();
                     //F.panel1.VerticalScroll.Value = F.panel1.VerticalScroll.Minimum;
@@ -325,6 +370,7 @@ namespace ComicLayouter
                         LoopAudio();
                     }
                     last = DateTime.Now;
+                    F.ResumeLayout();
                 }
                 else
                 {
@@ -623,13 +669,25 @@ namespace ComicLayouter
             Size T = new Size(Size.Width - lsize.Width, Size.Height - lsize.Height);
             foreach (Control item in Controls)
             {
-                if (item != pictureBox1)
+                if (item != panel3)
                 {
                     item.Location = new Point(item.Location.X + T.Width, item.Location.Y + T.Height);
                 }
             }
-            pictureBox1.Size = new Size(pictureBox1.Size.Width + T.Width, pictureBox1.Size.Height + T.Height);
+            panel3.Size = new Size(panel3.Size.Width + T.Width, panel3.Size.Height + T.Height);
+
+            panelG.Dispose();
+            panelG = panel3.CreateGraphics();
+            panelG.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+            panelG.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+            panelG.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+            panelG.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            
+
+            //panel3.Size = pictureBox1.Size;
             lsize = Size;
+
+            fixframe(true);
         }
 
         private void textBox4_TextChanged(object sender, EventArgs e)
@@ -943,6 +1001,11 @@ namespace ComicLayouter
                 pictureBox1.Focus();*/
                 StopPlayback();
             }
+            /*if (thetimer != null)
+            {
+                thetimer.Dispose();
+                thetimer = null;
+            }*/
             timer1.Stop();
             bool started = false;
             //int fps = (int)float.Parse(S.textBox1.Text);
@@ -1065,7 +1128,11 @@ namespace ComicLayouter
             PW.Dispose();
             forcetime = 0;
             timer1.Start();
+
+
+            //thetimer = new System.Threading.Timer((a) => { pictureBox1.Invalidate(); }, null, 0, 10);
         }
+        System.Threading.Timer thetimer;
         public void button3_Click(object sender, EventArgs e)
         {
             if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
@@ -1182,6 +1249,11 @@ namespace ComicLayouter
         private void GifPreview_Click(object sender, EventArgs e)
         {
             inputBox.Focus();
+        }
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            timer1_Tick(null, null);
         }
     }
 }
