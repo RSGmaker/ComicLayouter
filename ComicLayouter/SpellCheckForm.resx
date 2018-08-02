@@ -123,4 +123,9 @@
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>114, 17</value>
   </metadata>
+  <data name="checkBox1.ToolTip" xml:space="preserve">
+    <value>When checked, ComicLayouter will auto detect words typed into the create.swf window, and show messages when spellcheck finds an error.
+
+This feature is redundant (and somewhat obsolete) when using create.swf extended with spellchecker enabled.</value>
+  </data>
 </root>

@@ -20,9 +20,9 @@ namespace ComicLayouter
         {
             InitializeComponent();
             T.SpellCheck.IsEnabled = true;
-            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"))
+            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\CL Dictionary.txt"))
             {
-                T.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"));
+                T.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\CL Dictionary.txt"));
             }
             ST = new System.Windows.Forms.RichTextBox();
             richTextBox1.Text = text;

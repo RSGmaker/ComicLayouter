@@ -118,16 +118,11 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC\Microsoft.mshtml\7.0.3300.0__b03f5f7f11d50a3a\Microsoft.mshtml.dll</HintPath>
-    </Reference>
     <Reference Include="NAudio">
-      <HintPath>..\..\..\..\NAudio\NAudio.dll</HintPath>
+      <HintPath>..\..\..\ComicLayouter.Suite1.6G\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="NAudio.WindowsMediaFormat">
-      <HintPath>..\..\..\..\NAudio\NAudio.WindowsMediaFormat.dll</HintPath>
+      <HintPath>..\..\..\ComicLayouter.Suite1.6G\NAudio.WindowsMediaFormat.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -410,7 +405,7 @@
   <ItemGroup>
     <Content Include="CLicon - Copy.ico" />
     <Content Include="CLicon.ico" />
-    <Content Include="Dictionary.txt">
+    <Content Include="CL Dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\IE.ico" />

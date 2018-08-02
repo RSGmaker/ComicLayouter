@@ -39,6 +39,7 @@ namespace ComicLayouter
         public string TITLE;
         public bool fullscreen;
         public Rectangle last;
+        public FormWindowState lastWindowState;
         public Point LP = Point.Empty;
         public bool capt = false;
         /// <summary>
@@ -64,6 +65,7 @@ namespace ComicLayouter
         string textbuffer;
         Point lastposition = Point.Empty;
         ToolTip TP = new ToolTip();
+        public bool customresolution = false;
         public WalfasWindow(Form1 form,bool useIE=false)
         {
             IE = useIE;
@@ -96,16 +98,20 @@ namespace ComicLayouter
             ////TransparencyKey = Color.Empty;
             //SC = new TextBox();
             SC.SpellCheck.IsEnabled = true;
-            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"))
+            if (System.IO.File.Exists(System.IO.Directory.GetCurrentDirectory() + "\\CL Dictionary.txt"))
             {
-                SC.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\Dictionary.txt"));
+                SC.SpellCheck.CustomDictionaries.Add(new Uri(System.IO.Directory.GetCurrentDirectory() + "\\CL Dictionary.txt"));
             }
             else
             {
-                MessageBox.Show("Dictionary.txt could not be loaded, spellcheck will use the default english dictionary only.");
+                MessageBox.Show("\"CL Dictionary.txt\" could not be loaded, spellcheck will use the default english dictionary only.");
             }
             
             textbuffer = "";
+            this.AutoScroll = false;
+            panel1.AutoScroll = this.AutoScroll;
+            HorizontalScroll.Maximum = 0;
+            VerticalScroll.Maximum = 0;
         }
 
         private void Document_ContextMenuShowing(object sender, HtmlElementEventArgs e)
@@ -345,6 +351,7 @@ namespace ComicLayouter
         const int WM_KEYUP = 0x101;
         const int WM_SYSKEYUP = 0x105;
         public int Interval;
+        public bool AutoSpellCheckActive = false;
         
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -353,6 +360,7 @@ namespace ComicLayouter
                 return base.ProcessCmdKey(ref msg, keyData);
             }
             //if (keyData != Keys.F3)
+            if (AutoSpellCheckActive)
             {
                 string s = keyData.ToString();
                 if (s == "Oem7")
@@ -538,7 +546,9 @@ namespace ComicLayouter
                     textbuffer = "";
                 }
                 SpellCheckForm TI = new SpellCheckForm(textbuffer);
+                TI.checkBox1.Checked = AutoSpellCheckActive;
                 TI.ShowDialog();
+                AutoSpellCheckActive = TI.checkBox1.Checked;
             }
             if (keyData == Keys.F6)
             {
@@ -643,20 +653,25 @@ namespace ComicLayouter
         private void showresolutionmenu()
         {
             //Waffle.Size
-            CustomResolution CR = new CustomResolution(Waffle.Width, Waffle.Height, Waffle.Dock != DockStyle.Fill);
+            CustomResolution CR = new CustomResolution(Waffle.Width, Waffle.Height, customresolution);
 
             CR.ShowDialog();
             if (CR.CRenabled)
             {
-                Waffle.Dock = DockStyle.None;
+                ///Waffle.Dock = DockStyle.None;
+                customresolution = true;
                 Waffle.Size = new Size(CR.width, CR.height);
+                pictureBox1.Size = Waffle.Size;
                 this.AutoScroll = true;
             }
             else
             {
-                Waffle.Dock = DockStyle.Fill;
+                ///Waffle.Dock = DockStyle.Fill;
+                customresolution = false;
                 Size = new Size(Size.Width + (CR.width - Waffle.Width), Size.Height + (CR.height - Waffle.Height));
+                this.AutoScroll = false;
             }
+            panel1.AutoScroll = this.AutoScroll;
         }
         private void opensavedata()
         {
@@ -684,7 +699,7 @@ namespace ComicLayouter
         }
         private void togglefullscreen()
         {
-            if (!fullscreen)
+            /*if (!fullscreen)
             {
                 if (WindowState == FormWindowState.Maximized)
                 {
@@ -701,6 +716,40 @@ namespace ComicLayouter
                 FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
                 Location = last.Location;
                 Size = last.Size;
+                fullscreen = false;
+            }*/
+            if (!fullscreen)
+            {
+                last = new Rectangle(Location, Size);
+                lastWindowState = this.WindowState;
+
+                this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+                ///this.Bounds = Screen.PrimaryScreen.Bounds;
+                Rectangle R = new Rectangle(Screen.PrimaryScreen.Bounds.Location, Screen.PrimaryScreen.Bounds.Size);
+                using (Graphics graphics = this.CreateGraphics())
+                {
+                    /*return new Size((Screen.PrimaryScreen.Bounds.Width * (int)graphics.DpiX) / 96
+                      , (Screen.PrimaryScreen.Bounds.Height * (int)graphics.DpiY) / 96);*/
+                    R.Width = (Screen.PrimaryScreen.Bounds.Width * (int)graphics.DpiX) / 96;
+                    R.Height = (Screen.PrimaryScreen.Bounds.Height * (int)graphics.DpiY) / 96;
+                }
+                this.Bounds = R;
+
+                fullscreen = true;
+            }
+            else
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+
+                Location = last.Location;
+                Size = last.Size;
+
+                if (lastWindowState != this.WindowState)
+                {
+                    WindowState = lastWindowState;
+                }
                 fullscreen = false;
             }
             TopMost = fullscreen;
@@ -807,12 +856,15 @@ namespace ComicLayouter
                     bool ok = false;
                     try
                     {
+                        System.Net.ServicePointManager.SecurityProtocol = (System.Net.SecurityProtocolType)3072;
                         string url = @"http://www.walfas.org/flash/create.swf";
                         string file = "create.swf";
+                        bool exD = false;
                         if (MessageBox.Show("Would you like to download the extended version of create.swf?\nIf not then the original will be downloaded instead.","Download create.swf extended?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             url = @"https://github.com/RSGmaker/Create.swf-stuff/raw/master/create.swf/create.swf";
                             file = "create.swf extended";
+                            exD = true;
                         }
                         System.Net.WebClient Client = new System.Net.WebClient();
                         Client.DownloadFile(url, System.Environment.CurrentDirectory + @"/create.swf");
@@ -820,7 +872,25 @@ namespace ComicLayouter
                         System.IO.FileInfo F = new System.IO.FileInfo(System.Environment.CurrentDirectory + @"/create.swf");
                         if (F.Length > 1000)
                         {
-                            MessageBox.Show(file+" has finished downloading","Success");
+                            if (!exD || System.IO.File.Exists("dictionary.txt"))
+                            {
+                                MessageBox.Show(file + " has finished downloading", "Success");
+                            }
+                            else
+                            {
+                                if (MessageBox.Show(file + " has finished downloading.\n\nCreate.swf extended has built-in support for spellchecking, would you like ComicLayouter to download the \"dictionary.txt\" needed to enable this feature?", "Download spellchecker dictionary?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                {
+                                    Client = new System.Net.WebClient();
+                                    Client.DownloadFile(@"https://github.com/RSGmaker/Create.swf-stuff/raw/master/create.swf/dictionary.txt", System.Environment.CurrentDirectory + @"/dictionary.txt");
+                                    Client.Dispose();
+                                    F = new System.IO.FileInfo(System.Environment.CurrentDirectory + @"/dictionary.txt");
+                                    file = "create.swf extended spellchecker dictionary";
+                                    if (F.Length > 1000)
+                                    {
+                                        MessageBox.Show(file + " has finished downloading", "Success");
+                                    }
+                                }
+                            }
                             ok = true;
                         }
                     }
@@ -850,6 +920,9 @@ namespace ComicLayouter
                     ((FlashPlayer)Waffle).Movie = "file://" + System.Environment.CurrentDirectory + @"/create.swf";
                     FlashPlayer FP = ((FlashPlayer)Waffle);
                 }
+                var Csize = new System.IO.FileInfo("create.swf").Length;
+                var VanillaCreateSwfSize = 3473857;
+                AutoSpellCheckActive = (Csize == VanillaCreateSwfSize) || !System.IO.File.Exists("dictionary.txt");
             }
             else
             {
@@ -864,9 +937,12 @@ namespace ComicLayouter
                     //open create.swf in ActiveX flash player.
                     ((FlashPlayer)Waffle).Movie = @"http://www.walfas.org/flash/create.swf";
                 }
+                AutoSpellCheckActive = true;
             }
             pictureBox1.Dock = DockStyle.None;
-            Waffle.Dock = DockStyle.Fill;
+            ///Waffle.Dock = DockStyle.Fill;
+            Waffle.Location = new Point(0, 0);
+            Waffle.Size = ClientSize;
             pictureBox1.SendToBack();
             
             Opacity = OPC;
@@ -1010,6 +1086,14 @@ namespace ComicLayouter
             {
                 Bitmap B = _Capture();
                 pictureBox1.Image = B;
+            }
+            else if (!customresolution)
+            {
+                pictureBox1.Location = new Point(0, 0);
+                pictureBox1.Size = this.ClientSize;
+                
+                Waffle.Location = pictureBox1.Location;
+                Waffle.Size = pictureBox1.Size;
             }
         }
 

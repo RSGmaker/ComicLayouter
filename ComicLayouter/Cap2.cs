@@ -4,7 +4,7 @@
     using System.Drawing;
     using System.Threading;
     using System.Windows.Forms;
-    using mshtml;
+    ///using mshtml;
     using System.Runtime.InteropServices;
 
     public class HtmlToBitmapConverter
@@ -59,8 +59,10 @@
         private void HideScrollBars(WebBrowser browser)
         {
             const string Hidden = "hidden";
-            var document = (IHTMLDocument2)browser.Document.DomDocument;
-            var style = (IHTMLStyle2)document.body.style;
+            //var document = (IHTMLDocument2)browser.Document.DomDocument;
+            dynamic document = browser.Document.DomDocument;
+            //var style = (IHTMLStyle2)document.body.style;
+            var style = document.body.style;
             style.overflowX = Hidden;
             style.overflowY = Hidden;
         }
